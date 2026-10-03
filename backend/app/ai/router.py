@@ -89,7 +89,11 @@ def build_router(settings: Settings, transport: httpx.AsyncBaseTransport | None 
         )
     if settings.nvidia_configured:
         providers["NVIDIA"] = NvidiaProvider(
-            settings.nvidia_api_key, settings.nvidia_model, settings.ai_timeout_seconds, transport
+            settings.nvidia_api_key,
+            settings.nvidia_model,
+            settings.ai_timeout_seconds,
+            transport,
+            enable_thinking=settings.nvidia_enable_thinking,
         )
     if settings.enable_mock:
         providers["MOCK"] = MockProvider(settings.mock_accuracy)

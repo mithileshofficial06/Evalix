@@ -91,7 +91,7 @@ Edit `backend/.env`:
 | Variable | Where to get it |
 |---|---|
 | `MISTRAL_API_KEY` | https://console.mistral.ai → API Keys. Default model `mistral-small-latest` |
-| `NVIDIA_API_KEY` | https://build.nvidia.com → sign in → any model page → *Get API Key* (starts with `nvapi-`). One key works for every hosted model. Default model `meta/llama-3.3-70b-instruct` |
+| `NVIDIA_API_KEY` | https://build.nvidia.com → sign in → any model page → *Get API Key* (starts with `nvapi-`). One key works for every hosted model. Default model `nvidia/nemotron-3.5-lightning-30b-a3b` with thinking off (`NVIDIA_ENABLE_THINKING=false`) |
 
 Set `AI_PROVIDER` to `AUTO` (Mistral, falling back to NVIDIA), `MISTRAL`, `NVIDIA`, or `MOCK`.
 The popup's provider selector overrides it per session. Change `MISTRAL_MODEL` / `NVIDIA_MODEL` to
@@ -147,6 +147,7 @@ average confidence for correct vs incorrect answers, latencies, duration, list o
 | Backend | `cd backend; .\.venv\Scripts\python -m pytest` | config, origin guard, prompt parsing, provider request/error handling, retries + AUTO fallback, /answer, grading math |
 | Extension | `cd extension; npm run typecheck; npm test` | API retry/timeout, extraction for every layout, Next detection, answer mapping, dry-run + automation loop |
 | End-to-end | `cd e2e; npm test` | real extension in Chromium: full 15/50-question runs graded 100% with MOCK, dry-run safety, opt-in refusal, STOP |
+| Live (costs credits) | `cd e2e; $env:EVALIX_LIVE_PROVIDER="NVIDIA"; npx playwright test tests/live.spec.ts` | full automation run against a real provider, prints the graded report |
 
 ## Adapting to an assessment system you administer
 

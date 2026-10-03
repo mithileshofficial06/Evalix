@@ -13,6 +13,7 @@ class OpenAICompatibleProvider:
     name = "OPENAI_COMPATIBLE"
     base_url = ""
     json_mode = False  # send response_format={"type": "json_object"}
+    max_tokens = 100
 
     def __init__(
         self,
@@ -26,12 +27,17 @@ class OpenAICompatibleProvider:
         self.timeout = timeout
         self._transport = transport
 
+    def _extra_payload(self) -> dict:
+        """Provider-specific request fields."""
+        return {}
+
     def _payload(self, req: AnswerRequest) -> dict:
         payload = {
             "model": self.model,
             "messages": build_messages(req),
             "temperature": 0,
-            "max_tokens": 100,
+            "max_tokens": self.max_tokens,
+            **self._extra_payload(),
         }
         if self.json_mode:
             payload["response_format"] = {"type": "json_object"}

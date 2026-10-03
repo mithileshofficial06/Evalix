@@ -46,6 +46,21 @@ async def test_nvidia_request_shape():
     assert seen["url"] == "https://integrate.api.nvidia.com/v1/chat/completions"
     assert seen["body"]["model"] == "meta/llama-3.3-70b-instruct"
     assert "response_format" not in seen["body"]
+    assert seen["body"]["chat_template_kwargs"] == {"enable_thinking": False}
+    assert seen["body"]["max_tokens"] == 100
+
+
+async def test_nvidia_thinking_enabled_raises_token_budget():
+    seen = {}
+
+    def handler(request: httpx.Request):
+        seen["body"] = json.loads(request.content)
+        return completion('<think>7*8=56, option D</think>{"answer": "D", "confidence": 0.97}')
+
+    p = NvidiaProvider("nk", "nvidia/nemotron-3.5-lightning-30b-a3b", transport=httpx.MockTransport(handler), enable_thinking=True)
+    assert (await p.answer(make_request())).answer == "D"
+    assert seen["body"]["chat_template_kwargs"] == {"enable_thinking": True}
+    assert seen["body"]["max_tokens"] == 4096
 
 
 @pytest.mark.parametrize(

@@ -23,6 +23,7 @@ def test_prompt_lists_options_and_demands_json():
         ('{"answer": "56", "confidence": 0.7}', ("D", 0.7)),  # option text instead of letter
         ('{"answer": "D"}', ("D", 0.5)),  # missing confidence
         ('{"answer": "D", "confidence": 7.5e3}', ("D", 1.0)),  # clamped
+        ('<think>{"answer": "A"} no wait</think>{"answer": "D", "confidence": 0.9}', ("D", 0.9)),  # think block
     ],
 )
 def test_parse_valid(output, expected):

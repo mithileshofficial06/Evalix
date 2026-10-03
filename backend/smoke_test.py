@@ -1,6 +1,6 @@
 r"""Sends a few real questions to a running backend and prints what each provider returns.
 
-    .\.venv\Scripts\python smoke_test.py MISTRAL      (or NVIDIA / AUTO / MOCK)
+    .\.venv\Scripts\python smoke_test.py NVIDIA [count]     (or MISTRAL / AUTO / MOCK; count defaults to 3)
 
 Costs a handful of API calls. The backend must be running on localhost:8000.
 """
@@ -46,4 +46,6 @@ def main(provider: str, count: int = 3) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1].upper() if len(sys.argv) > 1 else "AUTO"))
+    provider = sys.argv[1].upper() if len(sys.argv) > 1 else "AUTO"
+    count = int(sys.argv[2]) if len(sys.argv) > 2 else 3
+    sys.exit(main(provider, count))

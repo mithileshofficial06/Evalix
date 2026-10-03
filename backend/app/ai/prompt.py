@@ -36,8 +36,12 @@ _FENCE = re.compile(r"^```(?:json)?\s*|\s*```$", re.IGNORECASE | re.MULTILINE)
 _LETTER = re.compile(r"^\(?([A-Ja-j])[.):]?\)?$")
 
 
+_THINK = re.compile(r"<think>.*?</think>", re.IGNORECASE | re.DOTALL)
+
+
 def _first_json_object(text: str) -> dict:
-    cleaned = _FENCE.sub("", text.strip())
+    # Some reasoning models inline their thinking in <think> tags before the answer.
+    cleaned = _FENCE.sub("", _THINK.sub("", text).strip())
     decoder = json.JSONDecoder()
     for i, ch in enumerate(cleaned):
         if ch == "{":

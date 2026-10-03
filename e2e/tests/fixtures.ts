@@ -34,17 +34,17 @@ export const expect = test.expect;
 type Mode = "dry-run" | "automation";
 
 /** Configures Evalix and starts a session on the tab currently showing `url`, via the popup page. */
-export async function startSession(popup: Page, urlPattern: string, mode: Mode) {
+export async function startSession(popup: Page, urlPattern: string, mode: Mode, provider = "MOCK") {
   return popup.evaluate(
-    async ({ urlPattern, mode }) => {
+    async ({ urlPattern, mode, provider }) => {
       await chrome.storage.local.set({
-        settings: { enabled: true, mode, provider: "MOCK", backendUrl: "http://localhost:8000" },
+        settings: { enabled: true, mode, provider, backendUrl: "http://localhost:8000" },
         session: null,
       });
       const [tab] = await chrome.tabs.query({ url: urlPattern });
       return chrome.runtime.sendMessage({ type: "START_SESSION", tabId: tab.id });
     },
-    { urlPattern, mode },
+    { urlPattern, mode, provider },
   );
 }
 

@@ -59,8 +59,10 @@ export async function requestJson<T>(
 export const api = {
   health: (base: string) => requestJson<HealthResponse>(`${base}/health`, {}, { retries: 0, timeoutMs: 3000 }),
 
+  // The backend already retries and falls back between providers (worst case ~2 × 3 × timeout),
+  // so wait long enough for that and only retry here for transport failures.
   answer: (base: string, body: AnswerRequest) =>
-    requestJson<AnswerResponse>(`${base}/answer`, { method: "POST", body: JSON.stringify(body) }),
+    requestJson<AnswerResponse>(`${base}/answer`, { method: "POST", body: JSON.stringify(body) }, { retries: 1, timeoutMs: 120_000 }),
 
   gradingReport: (base: string, body: unknown) =>
     requestJson<GradingReport>(`${base}/grading/report`, { method: "POST", body: JSON.stringify(body) }),
