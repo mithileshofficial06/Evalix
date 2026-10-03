@@ -4,9 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "pretest": "npm --prefix ../extension run build",
     "test": "playwright test"
   },
   "devDependencies": {
-    "@playwright/test": "^1.63.0"
+    "@playwright/test": "^1.63.0",
+    "@types/chrome": "^0.3.4",
+    "@types/node": "^26.6.4"
   }
 }
