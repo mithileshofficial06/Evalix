@@ -65,9 +65,9 @@ class OpenAICompatibleProvider:
                     f"{self.base_url}/chat/completions", json=self._payload(messages, model, max_tokens), headers=headers
                 )
         except httpx.TimeoutException as e:
-            raise ProviderError(f"{self.name} timed out", retryable=True) from e
+            raise ProviderError(f"{self.name} timed out", retryable=True, unavailable=True) from e
         except httpx.HTTPError as e:
-            raise ProviderError(f"{self.name} network error: {e}", retryable=True) from e
+            raise ProviderError(f"{self.name} network error: {e}", retryable=True, unavailable=True) from e
 
         if res.status_code == 429 and res.headers.get("x-ratelimit-limit-req-minute") == "0":
             # A zero quota means the model isn't included in the account's plan — retrying can't help.

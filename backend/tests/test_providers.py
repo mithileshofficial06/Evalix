@@ -96,7 +96,7 @@ async def test_timeout_is_retryable():
     p = NvidiaProvider("nk", "m", transport=httpx.MockTransport(handler))
     with pytest.raises(ProviderError) as exc:
         await p.answer(make_request())
-    assert exc.value.retryable
+    assert exc.value.retryable and exc.value.unavailable
 
 
 async def test_missing_key_is_not_retryable():
@@ -134,3 +134,9 @@ async def test_retry_after_header_is_parsed():
     with pytest.raises(ProviderError) as exc:
         await p.answer(make_request())
     assert exc.value.retry_after == 7 and exc.value.unavailable
+
+
+async def test_mock_resolves_question_by_text_when_page_has_no_ids():
+    p = MockProvider(accuracy=1.0, latency_range=(0, 0))
+    req = make_request(question_id="hx1", options=[{"id": "A", "text": "54"}, {"id": "B", "text": "56"}])
+    assert (await p.answer(req)).answer == "B"

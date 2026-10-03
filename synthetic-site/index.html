@@ -23,19 +23,24 @@
           </label>
           <label>Layout
             <select name="layout">
-              <option value="mixed">Mixed (rotates all layouts)</option>
+              <option value="mixed">Mixed (rotates the four standard layouts)</option>
+              <option value="all">All (adds toggle buttons and unsemantic tiles)</option>
               <option value="radio">Radio buttons</option>
               <option value="cards">ARIA radio cards</option>
               <option value="select">Dropdown select</option>
               <option value="listbox">ARIA listbox</option>
+              <option value="toggle">Toggle buttons</option>
+              <option value="tiles">Plain div tiles (no semantics)</option>
             </select>
           </label>
           <label>Next button
             <select name="nav">
               <option value="mixed">Mixed (rotates variants)</option>
+              <option value="all">All (adds an unlabelled icon button)</option>
               <option value="button">Disabled-until-answered button</option>
               <option value="link">Link styled as button</option>
               <option value="form">Form submit</option>
+              <option value="icon">Unlabelled icon button</option>
             </select>
           </label>
           <label>Loading delay
@@ -43,6 +48,18 @@
               <option value="normal">Normal (0.2–0.9s)</option>
               <option value="none">None</option>
               <option value="slow">Slow (1–2.5s)</option>
+            </select>
+          </label>
+          <label>QA hooks (data-qa-* attributes)
+            <select name="hooks">
+              <option value="on">On</option>
+              <option value="off">Off - agent infers the structure</option>
+            </select>
+          </label>
+          <label>Option order
+            <select name="shuffle">
+              <option value="off">As lettered</option>
+              <option value="on">Shuffled on screen</option>
             </select>
           </label>
           <button type="submit" class="btn-next">Start assessment</button>

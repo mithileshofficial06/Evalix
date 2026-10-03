@@ -32,3 +32,11 @@ select { font: inherit; padding: 8px; border-radius: 6px; border: 1px solid var(
 .score { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; }
 .score dt { color: var(--muted); }
 .score dd { margin: 0; font-weight: 600; }
+.toggles { display: flex; flex-wrap: wrap; gap: 8px; }
+.toggle { font: inherit; border: 1px solid var(--border); border-radius: 999px; padding: 8px 14px; background: var(--card); color: var(--fg); cursor: pointer; }
+.toggle[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.tile-prompt { font-weight: 600; font-size: 18px; margin-bottom: 12px; }
+.tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.tile { border: 1px solid var(--border); border-radius: 8px; padding: 14px; cursor: pointer; user-select: none; }
+.tile--on { border-color: var(--accent); background: var(--accent-soft); }
+.btn-icon { font-size: 20px; padding: 6px 16px; }

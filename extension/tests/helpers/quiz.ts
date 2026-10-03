@@ -21,17 +21,27 @@ export function makeQuestions(n: number): QuizQuestion[] {
   }));
 }
 
-export function runQuiz(questions: QuizQuestion[], opts: { gapMs?: number; ignoreFirstClick?: boolean } = {}) {
-  const { gapMs = 10, ignoreFirstClick = false } = opts;
+export interface QuizOptions {
+  gapMs?: number;
+  ignoreFirstClick?: boolean;
+  layouts?: LayoutName[];
+  navs?: NavKind[];
+  hooks?: boolean;
+  /** Show options in reverse order (the page still records the original letters). */
+  shuffle?: boolean;
+}
+
+export function runQuiz(questions: QuizQuestion[], opts: QuizOptions = {}) {
+  const { gapMs = 10, ignoreFirstClick = false, layouts = LAYOUTS, navs = NAVS, hooks = true, shuffle = false } = opts;
   const answers: Record<string, string> = {};
   let index = 0;
   let clicksIgnored = 0;
 
   const show = (i: number) => {
     const q = questions[i];
-    const { recorded } = renderQuestion(LAYOUTS[i % 4], { nav: NAVS[i % 3], number: i + 1, total: questions.length, q });
-    const nav = document.querySelector<HTMLElement>("[data-qa-nav]")!;
-    const control = nav.querySelector<HTMLElement>("button, a, input")!;
+    const shown = shuffle ? { ...q, options: [...q.options].reverse() } : q;
+    const { recorded } = renderQuestion(layouts[i % layouts.length], { nav: navs[i % navs.length], number: i + 1, total: questions.length, q: shown, hooks });
+    const control = document.getElementById("stage")!.closest("body")!.querySelector<HTMLElement>("#nav button, #nav a, #nav input, form input[type=submit]")!;
     // Mirror the site: enable the button once an answer is chosen.
     const watch = setInterval(() => {
       if (recorded.length) {
@@ -57,11 +67,13 @@ export function runQuiz(questions: QuizQuestion[], opts: { gapMs?: number; ignor
   };
 
   const complete = () => {
-    const m = document.createElement("meta");
-    m.name = "evalix-page";
-    m.content = "complete";
-    document.head.append(m);
-    document.getElementById("stage")!.innerHTML = `<section data-qa-complete><h1>Assessment complete</h1></section>`;
+    if (hooks) {
+      const m = document.createElement("meta");
+      m.name = "evalix-page";
+      m.content = "complete";
+      document.head.append(m);
+    }
+    document.getElementById("stage")!.innerHTML = `<section${hooks ? " data-qa-complete" : ""}><h1>Assessment complete</h1><p>Your score is being calculated.</p></section>`;
   };
 
   show(0);

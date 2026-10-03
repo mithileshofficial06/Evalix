@@ -55,6 +55,8 @@ def build() -> None:
                     "answers": {q["id"]: key[q["id"]] for q in subset},
                     # Correct option text: grading still works when a page shuffles option order.
                     "texts": {q["id"]: texts[q["id"]] for q in subset},
+                    # Question stems: identify questions on pages that expose no question ids.
+                    "questions": {q["id"]: q["text"] for q in subset},
                 },
                 indent=2,
                 ensure_ascii=False,

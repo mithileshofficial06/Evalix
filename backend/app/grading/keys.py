@@ -31,3 +31,19 @@ def load_answer_texts(test_id: str) -> dict[str, str] | None:
     """question_id -> correct option text (older keys may not have it)."""
     data = _load(test_id)
     return data.get("texts") if data else None
+
+
+def _norm(s: str) -> str:
+    return re.sub(r"\s+", " ", s or "").strip().lower()
+
+
+def resolve_question_id(test_id: str | None, question_id: str, question_text: str | None) -> str:
+    """Maps an agent-assigned id (pages without ids) to the key's id by matching the question text."""
+    data = _load(test_id or "")
+    if not data or question_id in data["answers"] or not question_text:
+        return question_id
+    wanted = _norm(question_text)
+    for qid, text in (data.get("questions") or {}).items():
+        if _norm(text) == wanted:
+            return qid
+    return question_id

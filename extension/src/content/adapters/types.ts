@@ -2,12 +2,14 @@
 // interface, so supporting another assessment system you administer means writing a new adapter.
 import type { ExtractedQuestion, PageInfo } from "../../shared/types";
 
-export type OptionKind = "radio" | "aria-radio" | "select-option" | "aria-option";
+export type OptionKind = "radio" | "aria-radio" | "select-option" | "aria-option" | "toggle" | "generic";
 
 export interface OptionHandle {
   id: string; // letter assigned in DOM order
   kind: OptionKind;
   element: HTMLElement;
+  /** All choices of the question (generic choices are "selected" when they stand out from these). */
+  group?: HTMLElement[];
 }
 
 export interface Extraction {
@@ -39,5 +41,5 @@ export interface DomAdapter {
   /** Finds the control that advances to the next question / finishes. */
   findNext(doc: Document): NextControl | null;
   /** Visually marks an option (dry-run). */
-  highlight(option: OptionHandle | null, root: HTMLElement): void;
+  highlight(option: OptionHandle | null, root: HTMLElement, next?: HTMLElement | null): void;
 }

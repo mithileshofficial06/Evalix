@@ -161,3 +161,16 @@ async def test_decide_goes_through_the_same_fallback():
     n = Decider("NVIDIA", [None])
     res = await router(MISTRAL=m, NVIDIA=n).decide(make_decide_request(), "AUTO")
     assert (res.provider, res.page_state, res.action.action, res.fallback_used) == ("NVIDIA", "loading", "wait", True)
+
+
+async def test_auto_switches_immediately_on_timeout():
+    m = FakeProvider("MISTRAL", [ProviderError("timed out", retryable=True, unavailable=True)])
+    n = FakeProvider("NVIDIA", [OK])
+    res = await router(MISTRAL=m, NVIDIA=n).answer(make_request(), "AUTO")
+    assert m.calls == 1 and res.provider == "NVIDIA"
+
+
+async def test_explicit_mode_retries_timeouts():
+    m = FakeProvider("NVIDIA", [ProviderError("timed out", retryable=True, unavailable=True), OK])
+    res = await router(NVIDIA=m).answer(make_request(), "NVIDIA")
+    assert m.calls == 2 and res.provider == "NVIDIA"

@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from statistics import mean
 
+from .keys import resolve_question_id
 from ..schemas import GradingReport, IncorrectAnswer, QuestionResultIn, ScoreResponse, SessionReport
 
 
@@ -27,7 +28,7 @@ def _is_correct(r: QuestionResultIn, letter: str, text: str | None) -> bool:
 def grade_session(report: SessionReport, key: dict[str, str], texts: dict[str, str] | None = None) -> GradingReport:
     texts = texts or {}
     # Last result per question wins (a question can be retried).
-    by_q: dict[str, QuestionResultIn] = {r.question_id: r for r in report.results}
+    by_q: dict[str, QuestionResultIn] = {resolve_question_id(report.test_id, r.question_id, r.question_text): r for r in report.results}
     in_key = {qid: r for qid, r in by_q.items() if qid in key}
 
     answered = {qid: r for qid, r in in_key.items() if r.answer}

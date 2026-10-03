@@ -1,19 +1,26 @@
 // Synthetic assessment engine — the reference page Evalix is built and tested against.
 //
 // URL parameters:
-//   test   = quiz-15 | quiz-50
-//   layout = mixed | radio | cards | select | listbox
-//   nav    = mixed | button | link | form
-//   delay  = normal | none | slow
-import { el, LAYOUT_ORDER, LAYOUTS } from "./layouts.js";
+//   test    = quiz-15 | quiz-50
+//   layout  = mixed | all | radio | cards | select | listbox | toggle | tiles
+//             (mixed rotates the first four; all rotates every layout)
+//   nav     = mixed | all | button | link | form | icon   (all adds the unlabelled icon button)
+//   delay   = normal | none | slow
+//   hooks   = on | off    off: no data-qa-* attributes - the agent must infer everything
+//   shuffle = off | on    on: options shown in a different order than their letters
+import { el, LAYOUT_ALL, LAYOUT_ORDER, LAYOUTS } from "./layouts.js";
 
 const params = new URLSearchParams(location.search);
 const testId = params.get("test") || "quiz-15";
 const layoutMode = params.get("layout") || "mixed";
 const navMode = params.get("nav") || "mixed";
 const delayProfile = params.get("delay") || "normal";
+const hooks = params.get("hooks") !== "off";
+const shuffle = params.get("shuffle") === "on";
 
 const NAV_ORDER = ["button", "link", "form"];
+const NAV_ALL = [...NAV_ORDER, "icon"];
+const hook = (name, value = "") => (hooks ? { [name]: value } : {});
 const DELAYS = { none: [0, 0], normal: [200, 900], slow: [1000, 2500] };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const randomDelay = () => {
@@ -51,11 +58,15 @@ async function renderQuestion(i) {
 
   const q = data.questions[i];
   const total = data.questions.length;
-  const layoutName = layoutMode === "mixed" ? LAYOUT_ORDER[i % LAYOUT_ORDER.length] : layoutMode;
-  const navName = navMode === "mixed" ? NAV_ORDER[i % NAV_ORDER.length] : navMode;
+  const layouts = layoutMode === "all" ? LAYOUT_ALL : LAYOUT_ORDER;
+  const navs = navMode === "all" ? NAV_ALL : NAV_ORDER;
+  const layoutName = layoutMode === "mixed" || layoutMode === "all" ? layouts[i % layouts.length] : layoutMode;
+  const navName = navMode === "mixed" || navMode === "all" ? navs[i % navs.length] : navMode;
 
   let nextControl = null;
-  const { root, options, optionParent } = LAYOUTS[layoutName](q, (letter) => {
+  // Shuffled: same letters (the page records the right answer) shown in another order.
+  const shown = shuffle ? { ...q, options: i % 2 ? [...q.options].reverse() : [...q.options.slice(1), q.options[0]] } : q;
+  const { root, options, optionParent } = LAYOUTS[layoutName](shown, (letter) => {
     answers[q.id] = letter;
     nextControl?.removeAttribute("disabled");
     setError("");
@@ -65,10 +76,10 @@ async function renderQuestion(i) {
     "section",
     {
       className: "question",
-      "data-qa-question": "",
-      "data-qa-question-id": q.id,
-      "data-qa-question-number": String(i + 1),
-      "data-qa-question-total": String(total),
+      ...hook("data-qa-question"),
+      ...hook("data-qa-question-id", q.id),
+      ...hook("data-qa-question-number", String(i + 1)),
+      ...hook("data-qa-question-total", String(total)),
       "data-layout": layoutName,
     },
     [el("p", { className: "progress", text: `Question ${i + 1} of ${total}` }), root],
@@ -108,7 +119,7 @@ function buildNav(kind, isLast) {
     // Plain button, disabled until an answer is chosen.
     const btn = el("button", { type: "button", className: "btn-next", disabled: "", text: label ?? "Next" });
     btn.addEventListener("click", () => advance(data.questions[index].id));
-    return { container: el("div", { className: "nav-row", "data-qa-nav": "" }, [btn]), control: btn };
+    return { container: el("div", { className: "nav-row", ...hook("data-qa-nav") }, [btn]), control: btn };
   }
   if (kind === "link") {
     // Anchor styled as a button; never disabled, validates on click instead.
@@ -117,11 +128,17 @@ function buildNav(kind, isLast) {
       e.preventDefault();
       advance(data.questions[index].id);
     });
-    return { container: el("div", { className: "nav-row", "data-qa-nav": "" }, [a]), control: null };
+    return { container: el("div", { className: "nav-row", ...hook("data-qa-nav") }, [a]), control: null };
+  }
+  if (kind === "icon") {
+    // Icon-only button whose tooltip says nothing like "next": no text cue to go on.
+    const btn = el("button", { type: "button", className: "btn-next btn-icon", title: "Go on", text: "⇨" });
+    btn.addEventListener("click", () => advance(data.questions[index].id));
+    return { container: el("div", { className: "nav-row", ...hook("data-qa-nav") }, [btn]), control: null };
   }
   // Form submit input.
   const submit = el("input", { type: "submit", className: "btn-next", value: isLast ? "Submit assessment" : "Save & next" });
-  return { container: el("div", { className: "nav-row", "data-qa-nav": "" }, [submit]), control: null };
+  return { container: el("div", { className: "nav-row", ...hook("data-qa-nav") }, [submit]), control: null };
 }
 
 function setError(message) {

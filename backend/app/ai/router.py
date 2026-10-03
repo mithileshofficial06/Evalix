@@ -5,8 +5,8 @@
   AUTO    -> Mistral first, NVIDIA NIM if Mistral fails (or isn't configured)
   MOCK    -> answer-key mock (only when EVALIX_ENABLE_MOCK=true)
 
-In AUTO, a provider that is rate-limited (429) or unavailable (503) is skipped immediately rather
-than retried, and a rate-limited provider is put on a short cooldown so the following requests go
+In AUTO, a provider that is rate-limited (429), unavailable (503), timing out or unreachable is
+skipped immediately rather than retried, and a rate-limited provider is put on a short cooldown so the following requests go
 straight to the other provider until it recovers.
 """
 
@@ -109,7 +109,7 @@ class AIRouter:
                     if not e.retryable:
                         break  # e.g. bad key — go straight to the next provider
                     if e.unavailable and has_next:
-                        log.info("provider %s unavailable (%s) — switching to %s", provider.name, e.status, chain[index + 1].name)
+                        log.info("provider %s unavailable (%s) — switching to %s", provider.name, e.status or e, chain[index + 1].name)
                         break
                     continue
                 self._cooldown_until.pop(provider.name, None)

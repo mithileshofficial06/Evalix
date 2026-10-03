@@ -42,6 +42,8 @@ class QuestionResultIn(BaseModel):
     answer: str | None = None
     # Text of the chosen option: lets grading work when the page shuffles option order.
     answer_text: str | None = Field(default=None, max_length=1000)
+    # Question stem: identifies the question when the page exposes no question id.
+    question_text: str | None = Field(default=None, max_length=4000)
     confidence: float | None = None
     provider: str | None = None
     api_latency_ms: float | None = None

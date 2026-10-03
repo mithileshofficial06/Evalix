@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { agentSummary, historyByQuestion } from "../shared/agentReport";
 import { clock, liveMetrics, ms, pct } from "../shared/metrics";
 import { isActive } from "../shared/state";
 import type { GradingReport, Session } from "../shared/types";
@@ -31,7 +32,9 @@ export function Dashboard({ session }: { session: Session }) {
   const active = isActive(session);
   const now = useNow(active);
   const m = liveMetrics(session, now);
+  const agent = agentSummary(session);
   const total = session.current?.total ?? session.report?.total_questions ?? null;
+  const lastStep = session.actions?.at(-1);
 
   return (
     <>
@@ -62,6 +65,10 @@ export function Dashboard({ session }: { session: Session }) {
           <dd>{ms(m.avgProcessingMs)}</dd>
           <dt>Errors</dt>
           <dd style={m.errors ? { color: "var(--err)" } : undefined}>{m.errors}</dd>
+          <dt>Failed actions / recoveries</dt>
+          <dd>
+            {agent.failed_actions} / {agent.recovery_attempts}
+          </dd>
           <dt>Time</dt>
           <dd>{clock(m.elapsedMs)}</dd>
         </dl>
@@ -79,11 +86,20 @@ export function Dashboard({ session }: { session: Session }) {
               <strong>Answer: {session.current.answer}</strong> · Confidence {pct(session.current.confidence, 0)}
             </p>
           )}
+          {active && lastStep && (
+            <p className="notice">
+              {lastStep.ok ? "→" : "✗"} {lastStep.step}
+              {lastStep.detail ? ` — ${lastStep.detail}` : ""}
+            </p>
+          )}
         </section>
       )}
 
-      {session.report && <Report report={session.report} />}
+      {!active && <AgentReport session={session} />}
+      {session.report && <Report report={session.report} session={session} />}
       {session.reportError && !session.report && <p className="notice err">Grading unavailable: {session.reportError}</p>}
+
+      <History session={session} />
 
       <section className="card">
         <h2>Session logs</h2>
@@ -102,16 +118,88 @@ export function Dashboard({ session }: { session: Session }) {
   );
 }
 
-function Report({ report }: { report: GradingReport }) {
+const STATUS_LABEL = { running: "Running", complete: "Completed", stopped: "Stopped", error: "Failed" } as const;
+
+/** How the agent got through the assessment (the graded score is in the Evalix report below). */
+function AgentReport({ session }: { session: Session }) {
+  const a = agentSummary(session);
+  return (
+    <section className="card">
+      <h2>Agent report</h2>
+      <dl className="kv">
+        <dt>Completion status</dt>
+        <dd>
+          <span className={`dot ${a.status === "complete" ? "ok" : a.status === "error" ? "err" : "warn"}`} />
+          {STATUS_LABEL[a.status]}
+        </dd>
+        <dt>Total questions</dt>
+        <dd>{a.total_questions ?? "—"}</dd>
+        <dt>Questions answered</dt>
+        <dd>
+          {a.questions_answered}
+          {session.mode === "automation" ? ` (${a.answers_selected} selected)` : ""}
+        </dd>
+        <dt>Accuracy</dt>
+        <dd>{pct(a.accuracy)}</dd>
+        <dt>AI provider used</dt>
+        <dd>{a.providers.length ? a.providers.join(", ") : session.provider}</dd>
+        <dt>Avg response time</dt>
+        <dd>{ms(a.avg_response_ms)}</dd>
+        <dt>Avg confidence</dt>
+        <dd>{pct(a.avg_confidence)}</dd>
+        <dt>Failed actions</dt>
+        <dd style={a.failed_actions ? { color: "var(--warn)" } : undefined}>{a.failed_actions}</dd>
+        <dt>Recovery attempts</dt>
+        <dd>{a.recovery_attempts}</dd>
+        <dt>AI page readings</dt>
+        <dd>
+          {a.ai_page_readings}
+          {a.screenshots_used ? ` (${a.screenshots_used} with screenshot)` : ""}
+        </dd>
+      </dl>
+    </section>
+  );
+}
+
+/** Step-by-step action history, one collapsible block per question. */
+function History({ session }: { session: Session }) {
+  const groups = historyByQuestion(session.actions ?? []);
+  if (!groups.length) return null;
+  return (
+    <section className="card">
+      <h2>Action history</h2>
+      <div className="history">
+        {groups.map((g, i) => (
+          <details key={i} open={i === groups.length - 1}>
+            <summary className={g.failed ? "warn" : undefined}>
+              {g.label} · {g.events.length} steps{g.failed ? " · had failures" : ""}
+            </summary>
+            <ol>
+              {g.events.map((e, j) => (
+                <li key={j} className={e.ok ? undefined : "error"} title={new Date(e.at).toLocaleTimeString()}>
+                  {e.ok ? "→" : "✗"} {e.step}
+                  {e.detail ? <span className="detail"> — {e.detail}</span> : null}
+                </li>
+              ))}
+            </ol>
+          </details>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Report({ report, session }: { report: GradingReport; session: Session }) {
   const [copied, setCopied] = useState(false);
   const copy = async () => {
-    await navigator.clipboard.writeText(JSON.stringify(report, null, 2));
+    const full = { report, agent: agentSummary(session), actions: session.actions ?? [], results: session.results };
+    await navigator.clipboard.writeText(JSON.stringify(full, null, 2));
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
   return (
     <section className="card">
-      <h2>Evalix report — {report.test_id}</h2>
+      <h2>Evalix report (graded) — {report.test_id}</h2>
       <dl className="kv">
         <dt>Score</dt>
         <dd>
@@ -142,7 +230,7 @@ function Report({ report }: { report: GradingReport }) {
         </p>
       )}
       <button onClick={copy} style={{ marginTop: 8 }}>
-        {copied ? "Copied" : "Copy report JSON"}
+        {copied ? "Copied" : "Copy full report JSON"}
       </button>
     </section>
   );

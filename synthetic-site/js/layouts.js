@@ -69,6 +69,47 @@ function listboxLayout(q, onSelect) {
   return { root, options, optionParent: list };
 }
 
-export const LAYOUTS = { radio: radioLayout, cards: cardsLayout, select: selectLayout, listbox: listboxLayout };
+// 5. Toggle buttons (aria-pressed) under an <h3> stem.
+function toggleLayout(q, onSelect) {
+  const group = el("div", { className: "toggles" });
+  const options = q.options.map((o) => {
+    const b = el("button", { type: "button", className: "toggle", "aria-pressed": "false", text: o.text });
+    b.addEventListener("click", () => {
+      group.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", "false"));
+      b.setAttribute("aria-pressed", "true");
+      onSelect(o.id);
+    });
+    return b;
+  });
+  const root = el("div", { className: "layout-toggle" }, [el("h3", { className: "stem", text: q.text }), group]);
+  return { root, options, optionParent: group };
+}
+
+// 6. No semantics at all: plain <div> tiles whose selection shows only as a CSS class, a <div>
+// stem, and a handler on mousedown (a plain .click() does nothing) - like many custom widgets.
+function tilesLayout(q, onSelect) {
+  const grid = el("div", { className: "tiles" });
+  const options = q.options.map((o) => {
+    const tile = el("div", { className: "tile" }, [el("span", { className: "tile-text", text: o.text })]);
+    tile.addEventListener("mousedown", () => {
+      grid.querySelectorAll(".tile").forEach((t) => t.classList.remove("tile--on"));
+      tile.classList.add("tile--on");
+      onSelect(o.id);
+    });
+    return tile;
+  });
+  const root = el("div", { className: "layout-tiles" }, [el("div", { className: "tile-prompt", text: q.text }), grid]);
+  return { root, options, optionParent: grid };
+}
+
+export const LAYOUTS = {
+  radio: radioLayout,
+  cards: cardsLayout,
+  select: selectLayout,
+  listbox: listboxLayout,
+  toggle: toggleLayout,
+  tiles: tilesLayout,
+};
 export const LAYOUT_ORDER = ["radio", "cards", "select", "listbox"];
+export const LAYOUT_ALL = [...LAYOUT_ORDER, "toggle", "tiles"];
 export { el };

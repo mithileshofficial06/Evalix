@@ -13,7 +13,7 @@ import random
 import re
 from collections import defaultdict
 
-from ..grading.keys import load_answer_texts, load_key
+from ..grading.keys import load_answer_texts, load_key, resolve_question_id
 from ..schemas import AgentDecideRequest, AgentDecision, AnswerRequest, BrowserAction
 from .agent_prompt import validate_decision
 from .base import ProviderAnswer, ProviderDecision, ProviderError
@@ -58,15 +58,16 @@ class MockProvider:
     def _correct_letter(req: AnswerRequest) -> str | None:
         if not req.test_id:
             return None
+        qid = resolve_question_id(req.test_id, req.question_id, req.text)
         # Match by option text first: the page may display options in a different order.
         texts = load_answer_texts(req.test_id) or {}
-        wanted = texts.get(req.question_id)
+        wanted = texts.get(qid)
         if wanted:
             for o in req.options:
                 if _norm(o.text) == _norm(wanted):
                     return o.id
         key = load_key(req.test_id)
-        return key.get(req.question_id) if key else None
+        return key.get(qid) if key else None
 
     async def decide(self, req: AgentDecideRequest) -> ProviderDecision:
         await asyncio.sleep(self.latency_range[0])
@@ -89,8 +90,10 @@ class MockProvider:
 
         nav = [e for e in els if e.id not in option_ids and e.role in ("button", "link", "submit")]
         nexts = [e for e in nav if NEXT_TEXT.search(e.text)]
-        # Without a recognisable label, the only button outside the answer group is the best guess.
-        next_el = nexts[0] if nexts else (nav[0] if len(nav) == 1 else None)
+        # Without a recognisable label, the only button outside the answer group is the best guess
+        # (links usually lead away from the assessment).
+        buttons = [e for e in nav if e.role in ("button", "submit")]
+        next_el = nexts[0] if nexts else buttons[0] if len(buttons) == 1 else nav[0] if len(nav) == 1 else None
 
         option_texts = {_norm(e.text) for e in options}
         question = next(

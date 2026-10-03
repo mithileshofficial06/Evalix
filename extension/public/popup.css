@@ -61,3 +61,9 @@ select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid 
 .logs .error { color: var(--err); }
 .notice { font-size: 12px; color: var(--muted); }
 .notice.err { color: var(--err); }
+.history { max-height: 220px; overflow-y: auto; font: 11px/1.5 ui-monospace, Consolas, monospace; }
+.history summary { cursor: pointer; padding: 2px 0; }
+.history summary.warn { color: var(--warn); }
+.history ol { margin: 2px 0 6px; padding-left: 14px; list-style: none; }
+.history .error { color: var(--err); }
+.history .detail { color: var(--muted); }

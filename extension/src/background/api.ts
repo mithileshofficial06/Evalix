@@ -1,5 +1,5 @@
 // HTTP client for the local Evalix backend: per-attempt timeout + retry with exponential backoff.
-import type { AnswerRequest, AnswerResponse, GradingReport, HealthResponse } from "../shared/types";
+import type { AgentDecideRequest, AgentDecideResponse, AnswerRequest, AnswerResponse, GradingReport, HealthResponse } from "../shared/types";
 
 export class ApiError extends Error {
   constructor(message: string, readonly status: number | null, readonly retryable: boolean) {
@@ -63,6 +63,9 @@ export const api = {
   // so wait long enough for that and only retry here for transport failures.
   answer: (base: string, body: AnswerRequest) =>
     requestJson<AnswerResponse>(`${base}/answer`, { method: "POST", body: JSON.stringify(body) }, { retries: 1, timeoutMs: 120_000 }),
+
+  decide: (base: string, body: AgentDecideRequest) =>
+    requestJson<AgentDecideResponse>(`${base}/agent/decide`, { method: "POST", body: JSON.stringify(body) }, { retries: 1, timeoutMs: 120_000 }),
 
   gradingReport: (base: string, body: unknown) =>
     requestJson<GradingReport>(`${base}/grading/report`, { method: "POST", body: JSON.stringify(body) }),

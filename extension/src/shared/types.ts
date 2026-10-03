@@ -83,6 +83,7 @@ export interface AnswerRequest {
 export interface AnswerResponse {
   answer: string;
   confidence: number;
+  action?: "select_answer";
   provider: string;
   model: string;
   latency_ms: number;
@@ -93,7 +94,9 @@ export interface AnswerResponse {
 export interface QuestionResult {
   question_id: string;
   question_number: number | null;
+  question_text?: string | null;
   answer: string | null;
+  answer_text?: string | null;
   confidence: number | null;
   provider: string | null;
   api_latency_ms: number | null;
@@ -126,6 +129,75 @@ export interface GradingReport {
   incorrect_questions: { question_id: string; given: string | null; expected: string }[];
 }
 
+// ---- Browser agent (/agent/decide) -----------------------------------------
+
+export type AgentTask = "understand" | "recover";
+export type PageState = "question" | "loading" | "complete" | "other";
+export const BROWSER_ACTIONS = ["select_answer", "click", "type", "scroll", "wait", "navigate", "finish", "retry"] as const;
+export type BrowserActionName = (typeof BROWSER_ACTIONS)[number];
+
+export interface SnapshotElement {
+  id: string; // "e12" — only meaningful within one observation
+  tag: string;
+  role: string;
+  text: string;
+  state: string[];
+  group: string | null;
+}
+
+export interface PageSnapshot {
+  url: string;
+  title: string;
+  texts: string[];
+  elements: SnapshotElement[];
+}
+
+export interface BrowserAction {
+  action: BrowserActionName;
+  target: string | null;
+  value: string | null;
+}
+
+export interface AgentDecision {
+  page_state: PageState;
+  question_text: string | null;
+  option_ids: string[];
+  next_id: string | null;
+  action: BrowserAction;
+  confidence: number;
+}
+
+export interface AgentDecideRequest {
+  session_id: string;
+  test_id: string | null;
+  page_url: string;
+  provider: ProviderMode;
+  task: AgentTask;
+  goal: string;
+  snapshot: PageSnapshot;
+  history: string[];
+  screenshot: string | null;
+}
+
+export interface AgentDecideResponse extends AgentDecision {
+  provider: string;
+  model: string;
+  latency_ms: number;
+  attempts: number;
+  fallback_used: boolean;
+  used_screenshot: boolean;
+}
+
+/** One step of the agent's action history (shown in the report, saved with the run). */
+export interface ActionEvent {
+  at: number;
+  question: number | null; // question number when known
+  questionId: string | null;
+  step: string; // "observed", "understood", "answer selected", "option clicked", "recovery", ...
+  ok: boolean;
+  detail?: string;
+}
+
 // ---- Session (persisted in chrome.storage.local) ---------------------------
 
 export interface LogEntry {
@@ -156,6 +228,7 @@ export interface Session {
   results: QuestionResult[];
   errorCount: number;
   logs: LogEntry[];
+  actions: ActionEvent[];
   report: GradingReport | null;
   reportError?: string | null;
 }

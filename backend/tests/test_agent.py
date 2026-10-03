@@ -104,7 +104,8 @@ async def test_mock_reads_the_page():
 
 
 async def test_mock_recover_finds_unlabelled_next():
-    snap = {**SNAPSHOT, "elements": [*SNAPSHOT["elements"][1:5], {"id": "e9", "tag": "button", "role": "button", "text": "⇨"}]}
+    # The brand link is also outside the answer group; the lone button is the better guess.
+    snap = {**SNAPSHOT, "elements": [*SNAPSHOT["elements"][:5], {"id": "e9", "tag": "button", "role": "button", "text": "⇨ Go on"}]}
     req = make_decide_request(task="recover", goal="advance to the next question", snapshot=snap)
     d = (await MockProvider(latency_range=(0, 0)).decide(req)).decision
     assert d.action.action == "click" and d.action.target == "e9"

@@ -28,6 +28,7 @@ const session = (results: QuestionResult[]): Session => ({
   results,
   errorCount: 1,
   logs: [],
+    actions: [],
   report: null,
 });
 

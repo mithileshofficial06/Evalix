@@ -128,3 +128,17 @@ def test_grades_by_option_text_when_page_shuffles_options():
     )
     r = grade_session(report, key, texts)
     assert (r.correct, r.incorrect) == (1, 1)
+
+
+def test_questions_without_page_ids_are_resolved_by_text():
+    from app.grading.keys import load_key
+    from app.grading.simulator import grade_session
+    from app.schemas import SessionReport
+
+    key = load_key("quiz-15")
+    report = SessionReport(
+        session_id="s", test_id="quiz-15", mode="automation", provider="MOCK", started_at=0, finished_at=10,
+        results=[{"question_id": "n1", "question_text": "What is 7 × 8?", "answer": "A", "answer_text": "56", "selected": True}],
+    )
+    r = grade_session(report, key, {"q01": "56"})
+    assert (r.processed, r.correct) == (1, 1)

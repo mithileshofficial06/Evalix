@@ -1,5 +1,5 @@
 // Content script entry: runs on localhost pages, but does nothing unless the page opts in.
-import type { AskReply, BackgroundMessage, ContentMessage, HelloReply, ProbeReply } from "../shared/messages";
+import type { AskReply, BackgroundMessage, ContentMessage, DecideReply, HelloReply, ProbeReply } from "../shared/messages";
 import { resolveAdapter } from "./adapters";
 import { Bridge, Runner } from "./runner";
 
@@ -8,6 +8,9 @@ const fire = (msg: ContentMessage) => void send(msg).catch(() => undefined);
 
 const bridge: Bridge = {
   ask: (question) => send<AskReply>({ type: "ASK", question }),
+  decide: (input) =>
+    send<DecideReply>({ type: "DECIDE", ...input }).catch((err) => ({ ok: false, error: String(err) }) as DecideReply),
+  action: (event) => fire({ type: "ACTION", event }),
   questionStarted: (question) => fire({ type: "QUESTION_STARTED", question }),
   result: (result) => fire({ type: "RESULT", result }),
   state: (state) => fire({ type: "STATE", state }),

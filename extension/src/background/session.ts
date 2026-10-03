@@ -1,6 +1,7 @@
 // Session lifecycle and the content-script message handlers. All session mutations go through a
 // single promise chain so rapid messages from the page can't interleave read-modify-write cycles.
-import type { AskReply, BackgroundMessage, ContentMessage, HelloReply, ProbeReply, StartReply } from "../shared/messages";
+import { agentSummary } from "../shared/agentReport";
+import type { AskReply, BackgroundMessage, ContentMessage, DecideReply, HelloReply, ProbeReply, StartReply } from "../shared/messages";
 import { getStore, setSession } from "../shared/storage";
 import { isActive } from "../shared/state";
 import type { LogEntry, Session } from "../shared/types";
@@ -9,6 +10,7 @@ export { isActive };
 import { api } from "./api";
 
 const MAX_LOGS = 200;
+const MAX_ACTIONS = 3000;
 
 
 let queue: Promise<unknown> = Promise.resolve();
@@ -63,6 +65,7 @@ export async function startSession(tabId: number): Promise<StartReply> {
     results: [],
     errorCount: 0,
     logs: [],
+    actions: [],
     report: null,
   };
   pushLog(s, "info", `Session started: ${s.mode}, provider ${s.provider}, test ${page.testId ?? "unknown"}`);
@@ -103,6 +106,8 @@ export async function submitReport(): Promise<void> {
       started_at: session.startedAt,
       finished_at: session.finishedAt,
       results: session.results,
+      agent: agentSummary(session),
+      actions: session.actions,
     });
     await mutateSession((s) => {
       s.report = report;
@@ -118,7 +123,17 @@ export async function submitReport(): Promise<void> {
   }
 }
 
-export async function handleContentMessage(msg: ContentMessage, tabId: number | undefined): Promise<unknown> {
+/** Visible-tab screenshot for the AI, only when the DOM alone could not be understood. */
+async function captureScreenshot(windowId: number | undefined): Promise<string | null> {
+  if (windowId == null) return null;
+  try {
+    return await chrome.tabs.captureVisibleTab(windowId, { format: "jpeg", quality: 60 });
+  } catch {
+    return null; // e.g. the tab is not visible or activeTab was not granted
+  }
+}
+
+export async function handleContentMessage(msg: ContentMessage, tabId: number | undefined, windowId?: number): Promise<unknown> {
   const { session, settings } = await getStore();
   const mine = isActive(session) && session.tabId === tabId;
 
@@ -127,6 +142,16 @@ export async function handleContentMessage(msg: ContentMessage, tabId: number | 
       // A full page load (e.g. navigation to the completion page) restarts the content script;
       // tell it to resume if this tab owns the running session.
       const reply: HelloReply = { run: mine && settings.enabled ? session.mode : null };
+      if (reply.run) {
+        // The previous page's script was torn down mid-transition: a new document loading after
+        // pressing Next is itself the verification that the page moved on.
+        await mutateSession((s) => {
+          const last = s.actions?.at(-1);
+          if (last?.step === "next clicked") {
+            s.actions.push({ ...last, at: Date.now(), step: "transition verified", ok: true, detail: `new page loaded: ${new URL(msg.page.url).pathname}` });
+          }
+        });
+      }
       return reply;
     }
     case "ASK": {
@@ -158,6 +183,35 @@ export async function handleContentMessage(msg: ContentMessage, tabId: number | 
           pushLog(s, "error", `Q${msg.question.questionNumber ?? "?"}: AI request failed — ${error}`);
         });
         return { ok: false, error } satisfies AskReply;
+      }
+    }
+    case "DECIDE": {
+      if (!mine) return { ok: false, error: "No active session" } satisfies DecideReply;
+      const screenshot = msg.screenshot ? await captureScreenshot(windowId) : null;
+      if (msg.screenshot && !screenshot) {
+        await mutateSession((s) => pushLog(s, "warn", "Screenshot unavailable — AI reads the page from the DOM only"));
+      }
+      try {
+        const decision = await api.decide(settings.backendUrl, {
+          session_id: session.id,
+          test_id: session.page.testId,
+          page_url: session.page.url,
+          provider: session.provider,
+          task: msg.task,
+          goal: msg.goal,
+          snapshot: msg.snapshot,
+          history: msg.history,
+          screenshot,
+        });
+        await mutateSession((s) => {
+          const shot = decision.used_screenshot ? " + screenshot" : "";
+          pushLog(s, "info", `AI ${msg.task}${shot}: ${decision.page_state}, ${decision.action.action} via ${decision.provider}, ${decision.latency_ms.toFixed(0)} ms`);
+        });
+        return { ok: true, decision } satisfies DecideReply;
+      } catch (err) {
+        const error = (err as Error).message;
+        await mutateSession((s) => pushLog(s, "warn", `AI ${msg.task} failed — ${error}`));
+        return { ok: false, error } satisfies DecideReply;
       }
     }
     default:
@@ -193,6 +247,10 @@ export async function handleContentMessage(msg: ContentMessage, tabId: number | 
         break;
       case "LOG":
         pushLog(s, msg.level, msg.message);
+        break;
+      case "ACTION":
+        (s.actions ??= []).push({ ...msg.event, at: Date.now() });
+        if (s.actions.length > MAX_ACTIONS) s.actions.splice(0, s.actions.length - MAX_ACTIONS);
         break;
       case "COMPLETE":
         s.state = "complete";

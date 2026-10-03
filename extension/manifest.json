@@ -3,7 +3,7 @@
   "name": "Evalix",
   "version": "0.1.0",
   "description": "AI assessment execution and QA engine for opted-in local assessment pages.",
-  "permissions": ["storage"],
+  "permissions": ["storage", "activeTab"],
   "host_permissions": ["http://localhost/*", "http://127.0.0.1/*"],
   "background": {
     "service_worker": "background.js"

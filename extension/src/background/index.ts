@@ -16,7 +16,7 @@ chrome.runtime.onMessage.addListener((msg: PopupMessage | ContentMessage, sender
   // Extension pages (popup, even when opened in a tab) have a chrome-extension:// URL;
   // content scripts report the web page's URL.
   const fromExtensionPage = sender.url?.startsWith(chrome.runtime.getURL("")) ?? false;
-  const work = fromExtensionPage ? handlePopup(msg as PopupMessage) : handleContentMessage(msg as ContentMessage, sender.tab?.id);
+  const work = fromExtensionPage ? handlePopup(msg as PopupMessage) : handleContentMessage(msg as ContentMessage, sender.tab?.id, sender.tab?.windowId);
   work.then(sendResponse, (err) => sendResponse({ ok: false, error: String(err) }));
   return true; // keep the channel open for the async response
 });

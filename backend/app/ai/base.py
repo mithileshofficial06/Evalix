@@ -9,16 +9,25 @@ from ..schemas import AgentDecideRequest, AgentDecision, AnswerRequest
 class ProviderError(Exception):
     """A provider call failed. `retryable` decides whether the router retries the same provider."""
 
-    def __init__(self, message: str, *, retryable: bool, status: int | None = None, retry_after: float | None = None):
+    def __init__(
+        self,
+        message: str,
+        *,
+        retryable: bool,
+        status: int | None = None,
+        retry_after: float | None = None,
+        unavailable: bool = False,
+    ):
         super().__init__(message)
         self.retryable = retryable
         self.status = status
         self.retry_after = retry_after  # seconds, from a Retry-After header
+        self._unavailable = unavailable
 
     @property
     def unavailable(self) -> bool:
-        """Rate-limited or temporarily down: another provider should take over right away."""
-        return self.status in (429, 503)
+        """Rate-limited, down or not responding: another provider should take over right away."""
+        return self._unavailable or self.status in (429, 503)
 
 
 @dataclass
