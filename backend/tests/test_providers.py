@@ -120,3 +120,17 @@ async def test_mock_accuracy_zero_is_always_wrong():
     key = load_key("quiz-15")
     for qid in ["q01", "q02", "q03"]:
         assert (await p.answer(make_request(question_id=qid))).answer != key[qid]
+
+
+async def test_mock_matches_answer_by_text_when_options_reordered():
+    p = MockProvider(accuracy=1.0, latency_range=(0, 0))
+    req = make_request(options=[{"id": "A", "text": "56"}, {"id": "B", "text": "54"}, {"id": "C", "text": "64"}])
+    assert (await p.answer(req)).answer == "A"
+
+
+async def test_retry_after_header_is_parsed():
+    response = httpx.Response(429, json={"error": "slow down"}, headers={"retry-after": "7"})
+    p = MistralProvider("mk", "m", transport=httpx.MockTransport(lambda r: response))
+    with pytest.raises(ProviderError) as exc:
+        await p.answer(make_request())
+    assert exc.value.retry_after == 7 and exc.value.unavailable

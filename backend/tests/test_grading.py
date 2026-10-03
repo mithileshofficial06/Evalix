@@ -109,3 +109,22 @@ def test_score_endpoint(client):
 def test_tests_listing(client):
     tests = {t["test_id"]: t["questions"] for t in client.get("/grading/tests").json()}
     assert tests == {"quiz-15": 15, "quiz-50": 50}
+
+
+def test_grades_by_option_text_when_page_shuffles_options():
+    from app.grading.simulator import grade_session
+    from app.schemas import SessionReport
+
+    key = {"q01": "D", "q02": "C"}
+    texts = {"q01": "56", "q02": "Mars"}
+    report = SessionReport(
+        session_id="s", test_id="t", mode="automation", provider="MOCK", started_at=0, finished_at=10,
+        results=[
+            # Displayed in another order: on-screen letter A was "56" -> correct by text.
+            {"question_id": "q01", "answer": "A", "answer_text": "56", "selected": True},
+            # Letter matches the key but the text does not -> wrong.
+            {"question_id": "q02", "answer": "C", "answer_text": "Venus", "selected": True},
+        ],
+    )
+    r = grade_session(report, key, texts)
+    assert (r.correct, r.incorrect) == (1, 1)

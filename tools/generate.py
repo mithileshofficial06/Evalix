@@ -4,7 +4,7 @@
 
 Writes:
   synthetic-site/data/<test>.json        public: questions + lettered options (no answers)
-  backend/app/grading/keys/<test>.json   private: question_id -> correct letter
+  backend/app/grading/keys/<test>.json   private: question_id -> correct letter (and option text)
 """
 
 from __future__ import annotations
@@ -27,7 +27,7 @@ def build() -> None:
     KEYS.mkdir(parents=True, exist_ok=True)
     rng = random.Random(SEED)
 
-    items, key = [], {}
+    items, key, texts = [], {}, {}
     for i, (text, correct, distractors) in enumerate(QUESTIONS, start=1):
         options = [correct, *distractors]
         rng.shuffle(options)
@@ -40,6 +40,7 @@ def build() -> None:
             }
         )
         key[qid] = LETTERS[options.index(correct)]
+        texts[qid] = correct
 
     for test_id, meta in TESTS.items():
         subset = items[: meta["count"]]
@@ -48,7 +49,16 @@ def build() -> None:
             encoding="utf-8",
         )
         (KEYS / f"{test_id}.json").write_text(
-            json.dumps({"test_id": test_id, "answers": {q["id"]: key[q["id"]] for q in subset}}, indent=2),
+            json.dumps(
+                {
+                    "test_id": test_id,
+                    "answers": {q["id"]: key[q["id"]] for q in subset},
+                    # Correct option text: grading still works when a page shuffles option order.
+                    "texts": {q["id"]: texts[q["id"]] for q in subset},
+                },
+                indent=2,
+                ensure_ascii=False,
+            ),
             encoding="utf-8",
         )
         print(f"{test_id}: {len(subset)} questions")

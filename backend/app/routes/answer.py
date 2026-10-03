@@ -5,7 +5,7 @@ from urllib.parse import urlsplit
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from ..ai.router import AIRouter, AllProvidersFailed, NoProviderAvailable, build_router
+from ..ai.router import AIRouter, AllProvidersFailed, NoProviderAvailable, shared_router
 from ..config import get_settings
 from ..schemas import AnswerRequest, AnswerResponse
 
@@ -14,7 +14,7 @@ log = logging.getLogger("evalix.answer")
 
 
 def get_router() -> AIRouter:
-    return build_router(get_settings())
+    return shared_router(get_settings())
 
 
 def page_origin(url: str) -> str:

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from statistics import mean
 
 from ..schemas import GradingReport, IncorrectAnswer, QuestionResultIn, ScoreResponse, SessionReport
@@ -11,13 +12,26 @@ def _avg(values: list[float]) -> float | None:
     return round(mean(values), 4) if values else None
 
 
-def grade_session(report: SessionReport, key: dict[str, str]) -> GradingReport:
+def _norm(s: str) -> str:
+    return re.sub(r"\s+", " ", s).strip().lower()
+
+
+def _is_correct(r: QuestionResultIn, letter: str, text: str | None) -> bool:
+    # The agent letters options in on-screen order; if the page shuffled them, only the option
+    # text identifies the answer, so prefer it when both sides have it.
+    if r.answer_text and text:
+        return _norm(r.answer_text) == _norm(text)
+    return r.answer == letter
+
+
+def grade_session(report: SessionReport, key: dict[str, str], texts: dict[str, str] | None = None) -> GradingReport:
+    texts = texts or {}
     # Last result per question wins (a question can be retried).
     by_q: dict[str, QuestionResultIn] = {r.question_id: r for r in report.results}
     in_key = {qid: r for qid, r in by_q.items() if qid in key}
 
     answered = {qid: r for qid, r in in_key.items() if r.answer}
-    correct = {qid for qid, r in answered.items() if r.answer == key[qid]}
+    correct = {qid for qid, r in answered.items() if _is_correct(r, key[qid], texts.get(qid))}
     incorrect = [
         IncorrectAnswer(question_id=qid, given=r.answer, expected=key[qid])
         for qid, r in sorted(answered.items())

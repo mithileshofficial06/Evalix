@@ -12,11 +12,22 @@ _SAFE_ID = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
 
 
 @lru_cache
-def load_key(test_id: str) -> dict[str, str] | None:
-    """question_id -> correct letter, or None if no key exists for this test."""
+def _load(test_id: str) -> dict | None:
     if not _SAFE_ID.match(test_id or ""):
         return None
     path = KEYS_DIR / f"{test_id}.json"
     if not path.is_file():
         return None
-    return json.loads(path.read_text(encoding="utf-8"))["answers"]
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_key(test_id: str) -> dict[str, str] | None:
+    """question_id -> correct letter, or None if no key exists for this test."""
+    data = _load(test_id)
+    return data["answers"] if data else None
+
+
+def load_answer_texts(test_id: str) -> dict[str, str] | None:
+    """question_id -> correct option text (older keys may not have it)."""
+    data = _load(test_id)
+    return data.get("texts") if data else None

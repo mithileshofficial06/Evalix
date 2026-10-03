@@ -7,7 +7,7 @@ from pathlib import Path
 
 from fastapi import APIRouter, HTTPException
 
-from ..grading.keys import KEYS_DIR, load_key
+from ..grading.keys import KEYS_DIR, load_answer_texts, load_key
 from ..grading.simulator import grade_session, score_answers
 from ..schemas import GradingReport, ScoreRequest, ScoreResponse, SessionReport
 
@@ -31,7 +31,7 @@ def tests() -> list[dict]:
 
 @router.post("/report", response_model=GradingReport)
 def report(body: SessionReport) -> GradingReport:
-    result = grade_session(body, _key_or_404(body.test_id))
+    result = grade_session(body, _key_or_404(body.test_id), load_answer_texts(body.test_id or ""))
     log.info(
         "session %s %s: accuracy=%.1f%% completion=%.1f%% errors=%d",
         body.session_id, body.test_id, result.accuracy * 100, result.completion_rate * 100, result.errors,

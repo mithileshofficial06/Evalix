@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from .config import VERSION, get_settings
-from .routes import answer, grading, health
+from .routes import agent, answer, grading, health
 
 EXTENSION_ORIGIN_PREFIX = "chrome-extension://"
 
@@ -44,6 +44,7 @@ def create_app() -> FastAPI:
 
     app.include_router(health.router)
     app.include_router(answer.router)
+    app.include_router(agent.router)
     app.include_router(grading.router)
     return app
 

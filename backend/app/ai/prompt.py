@@ -11,9 +11,10 @@ SYSTEM_PROMPT = (
     "You are the answering agent in an automated QA test of an assessment platform. "
     "You receive one multiple-choice question and must choose the single best option.\n"
     "Respond with ONLY a JSON object and nothing else — no prose, no markdown, no code fences:\n"
-    '{"answer": "<option letter>", "confidence": <number from 0 to 1>}\n'
+    '{"answer": "<option letter>", "confidence": <number from 0 to 1>, "action": "select_answer"}\n'
     "`answer` must be exactly one of the provided option letters. "
-    "`confidence` is your probability that the answer is correct."
+    "`confidence` is your probability that the answer is correct. "
+    '`action` is always "select_answer".'
 )
 
 
@@ -39,7 +40,7 @@ _LETTER = re.compile(r"^\(?([A-Ja-j])[.):]?\)?$")
 _THINK = re.compile(r"<think>.*?</think>", re.IGNORECASE | re.DOTALL)
 
 
-def _first_json_object(text: str) -> dict:
+def first_json_object(text: str) -> dict:
     # Some reasoning models inline their thinking in <think> tags before the answer.
     cleaned = _FENCE.sub("", _THINK.sub("", text).strip())
     decoder = json.JSONDecoder()
@@ -56,7 +57,10 @@ def _first_json_object(text: str) -> dict:
 
 def parse_answer(text: str, req: AnswerRequest) -> tuple[str, float]:
     """Returns (option letter, confidence in [0, 1]) or raises InvalidModelOutput."""
-    obj = _first_json_object(text)
+    obj = first_json_object(text)
+    action = str(obj.get("action", "select_answer")).strip().lower()
+    if action != "select_answer":
+        raise InvalidModelOutput(f"Unexpected action {action!r} for an answer request")
     raw_answer = str(obj.get("answer", "")).strip()
     valid = {o.id.upper(): o for o in req.options}
 

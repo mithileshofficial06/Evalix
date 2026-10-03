@@ -22,8 +22,9 @@ class NvidiaProvider(OpenAICompatibleProvider):
         timeout: float = 30,
         transport: httpx.AsyncBaseTransport | None = None,
         enable_thinking: bool = False,
+        vision_model: str | None = None,
     ):
-        super().__init__(api_key, model, timeout, transport)
+        super().__init__(api_key, model, timeout, transport, vision_model)
         self.enable_thinking = enable_thinking
         # Reasoning tokens count against max_tokens, so leave room when thinking is on.
         self.max_tokens = 4096 if enable_thinking else 100

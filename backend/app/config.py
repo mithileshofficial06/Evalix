@@ -31,11 +31,14 @@ class Settings:
     nvidia_api_key: str
     mistral_model: str
     nvidia_model: str
+    mistral_vision_model: str
+    nvidia_vision_model: str
     default_provider: str
     enable_mock: bool
     mock_accuracy: float
     ai_timeout_seconds: float
     ai_max_retries: int
+    ai_cooldown_seconds: float
     nvidia_enable_thinking: bool
     allowed_page_origins: tuple[str, ...]
 
@@ -59,11 +62,15 @@ def get_settings() -> Settings:
         nvidia_api_key=os.getenv("NVIDIA_API_KEY", "").strip(),
         mistral_model=os.getenv("MISTRAL_MODEL", "ministral-14b-latest").strip(),
         nvidia_model=os.getenv("NVIDIA_MODEL", "nvidia/nemotron-3.5-lightning-30b-a3b").strip(),
+        # Used only when the agent sends a screenshot (DOM alone was ambiguous).
+        mistral_vision_model=os.getenv("MISTRAL_VISION_MODEL", "ministral-14b-latest").strip(),
+        nvidia_vision_model=os.getenv("NVIDIA_VISION_MODEL", "nvidia/nemotron-nano-12b-v2-vl").strip(),
         default_provider=provider,
         enable_mock=_bool(os.getenv("EVALIX_ENABLE_MOCK"), default=False),
         mock_accuracy=float(os.getenv("MOCK_ACCURACY", "0.9")),
         ai_timeout_seconds=float(os.getenv("AI_TIMEOUT_SECONDS", "15")),
         ai_max_retries=int(os.getenv("AI_MAX_RETRIES", "2")),
+        ai_cooldown_seconds=float(os.getenv("AI_COOLDOWN_SECONDS", "30")),
         nvidia_enable_thinking=_bool(os.getenv("NVIDIA_ENABLE_THINKING"), default=False),
         allowed_page_origins=_csv(
             os.getenv("ALLOWED_PAGE_ORIGINS", "http://localhost:8080,http://127.0.0.1:8080")
