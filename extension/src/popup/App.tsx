@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { updateSettings } from "../shared/storage";
 import type { PopupMessage } from "../shared/messages";
+import { isActive } from "../shared/state";
+import { Controls } from "./Controls";
 import { usePageProbe } from "./usePageProbe";
 import { useStore } from "./useStore";
 
@@ -8,7 +10,7 @@ const send = (msg: PopupMessage) => chrome.runtime.sendMessage(msg);
 
 export function App() {
   const store = useStore();
-  const { probe } = usePageProbe();
+  const { tabId, probe } = usePageProbe();
 
   // Re-check the backend while the popup is open.
   useEffect(() => {
@@ -62,6 +64,15 @@ export function App() {
           <p className="notice err">Start the backend: scripts\run-backend.ps1 ({settings.backendUrl})</p>
         )}
       </section>
+
+      <Controls
+        settings={settings}
+        session={store.session}
+        active={isActive(store.session)}
+        tabId={tabId}
+        probe={probe}
+        backendOnline={!!backend?.online}
+      />
 
       <section className="card">
         <h2>Page</h2>

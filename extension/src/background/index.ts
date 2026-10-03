@@ -1,9 +1,10 @@
 // Background service worker: owns settings and session state and is the only
 // component that talks to the local backend.
-import { getSettings, setBackendStatus, updateSettings } from "../shared/storage";
-import type { BackgroundMessage, PopupMessage, ProbeReply } from "../shared/messages";
-import type { BackendStatus } from "../shared/types";
+import type { BackgroundMessage, ContentMessage, PopupMessage, ProbeReply } from "../shared/messages";
+import { getSettings, getStore, setBackendStatus, updateSettings } from "../shared/storage";
+import type { BackendStatus, Settings } from "../shared/types";
 import { api } from "./api";
+import { handleContentMessage, isActive, startSession, stopSession } from "./session";
 
 chrome.runtime.onInstalled.addListener(async () => {
   // Persist defaults so the popup and content scripts read a complete settings object.
@@ -11,19 +12,37 @@ chrome.runtime.onInstalled.addListener(async () => {
   await checkBackend();
 });
 
-chrome.runtime.onMessage.addListener((msg: PopupMessage, _sender, sendResponse) => {
-  handle(msg).then(sendResponse, (err) => sendResponse({ ok: false, error: String(err) }));
+chrome.runtime.onMessage.addListener((msg: PopupMessage | ContentMessage, sender, sendResponse) => {
+  const work = sender.tab ? handleContentMessage(msg as ContentMessage, sender.tab.id) : handlePopup(msg as PopupMessage);
+  work.then(sendResponse, (err) => sendResponse({ ok: false, error: String(err) }));
   return true; // keep the channel open for the async response
 });
 
-async function handle(msg: PopupMessage): Promise<unknown> {
+// Switching Evalix OFF stops any running session immediately.
+chrome.storage.onChanged.addListener(async (changes) => {
+  const next = changes.settings?.newValue as Settings | undefined;
+  if (next && next.enabled === false && isActive((await getStore()).session)) {
+    await stopSession("Evalix switched OFF");
+  }
+});
+
+// Closing the session's tab ends the session.
+chrome.tabs.onRemoved.addListener(async (tabId) => {
+  const { session } = await getStore();
+  if (isActive(session) && session.tabId === tabId) await stopSession("Assessment tab closed");
+});
+
+async function handlePopup(msg: PopupMessage): Promise<unknown> {
   switch (msg.type) {
     case "CHECK_BACKEND":
       return checkBackend();
     case "PROBE_TAB":
       return probeTab(msg.tabId);
-    default:
-      return { ok: false, error: `Unhandled message: ${(msg as { type: string }).type}` };
+    case "START_SESSION":
+      return startSession(msg.tabId);
+    case "STOP_SESSION":
+      await stopSession();
+      return { ok: true };
   }
 }
 
