@@ -33,4 +33,4 @@ export type BackgroundMessage =
   | { type: "STOP" };
 
 export type AskReply = { ok: true; answer: AnswerResponse } | { ok: false; error: string };
-export type ProbeReply = { page: PageInfo | null };
+export type ProbeReply = { page: PageInfo | null; complete: boolean; question: ExtractedQuestion | null };

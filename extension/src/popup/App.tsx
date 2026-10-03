@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { updateSettings } from "../shared/storage";
 import type { PopupMessage } from "../shared/messages";
+import { usePageProbe } from "./usePageProbe";
 import { useStore } from "./useStore";
 
 const send = (msg: PopupMessage) => chrome.runtime.sendMessage(msg);
 
 export function App() {
   const store = useStore();
+  const { probe } = usePageProbe();
 
   // Re-check the backend while the popup is open.
   useEffect(() => {
@@ -58,6 +60,31 @@ export function App() {
         </dl>
         {!backend?.online && (
           <p className="notice err">Start the backend: scripts\run-backend.ps1 ({settings.backendUrl})</p>
+        )}
+      </section>
+
+      <section className="card">
+        <h2>Page</h2>
+        {probe?.page ? (
+          <>
+            <dl className="kv">
+              <dt>Test</dt>
+              <dd>{probe.page.testId ?? "—"}</dd>
+              <dt>Environment</dt>
+              <dd>{probe.page.environment}</dd>
+            </dl>
+            {probe.complete ? (
+              <p className="notice">Assessment complete.</p>
+            ) : probe.question ? (
+              <p className="question">
+                Q{probe.question.questionNumber ?? "?"}: {probe.question.text} ({probe.question.options.length} options)
+              </p>
+            ) : (
+              <p className="notice">Waiting for a question…</p>
+            )}
+          </>
+        ) : (
+          <p className="notice">No Evalix-enabled assessment on this tab.</p>
         )}
       </section>
     </div>

@@ -1,7 +1,7 @@
 // Background service worker: owns settings and session state and is the only
 // component that talks to the local backend.
 import { getSettings, setBackendStatus, updateSettings } from "../shared/storage";
-import type { PopupMessage } from "../shared/messages";
+import type { BackgroundMessage, PopupMessage, ProbeReply } from "../shared/messages";
 import type { BackendStatus } from "../shared/types";
 import { api } from "./api";
 
@@ -20,8 +20,20 @@ async function handle(msg: PopupMessage): Promise<unknown> {
   switch (msg.type) {
     case "CHECK_BACKEND":
       return checkBackend();
+    case "PROBE_TAB":
+      return probeTab(msg.tabId);
     default:
       return { ok: false, error: `Unhandled message: ${(msg as { type: string }).type}` };
+  }
+}
+
+/** Asks the tab's content script what it sees. No content script (non-localhost page) => not detected. */
+async function probeTab(tabId: number): Promise<ProbeReply> {
+  try {
+    const reply = (await chrome.tabs.sendMessage(tabId, { type: "PROBE" } satisfies BackgroundMessage)) as ProbeReply;
+    return reply ?? { page: null, complete: false, question: null };
+  } catch {
+    return { page: null, complete: false, question: null };
   }
 }
 

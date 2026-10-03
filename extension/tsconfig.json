@@ -9,6 +9,8 @@
     "noEmit": true,
     "skipLibCheck": true,
     "isolatedModules": true,
+    "allowJs": true,
+    "checkJs": false,
     "types": ["chrome"]
   },
   "include": ["src", "tests"]
