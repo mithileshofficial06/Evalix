@@ -2,14 +2,18 @@
 
 from __future__ import annotations
 
+import logging
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from .config import VERSION, get_settings
-from .routes import answer, health
+from .routes import answer, grading, health
 
 EXTENSION_ORIGIN_PREFIX = "chrome-extension://"
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
 
 def create_app() -> FastAPI:
@@ -40,6 +44,7 @@ def create_app() -> FastAPI:
 
     app.include_router(health.router)
     app.include_router(answer.router)
+    app.include_router(grading.router)
     return app
 
 

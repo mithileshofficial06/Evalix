@@ -103,14 +103,19 @@ export interface QuestionResult {
 }
 
 export interface GradingReport {
-  test_id: string;
+  session_id: string;
+  test_id: string | null;
+  mode: string;
+  provider: string;
   total_questions: number;
   processed: number;
   answered: number;
   correct: number;
   incorrect: number;
   unanswered: number;
-  accuracy: number;
+  errors: number;
+  accuracy: number; // correct / answered
+  score: number; // correct / total_questions
   completion_rate: number;
   avg_confidence: number | null;
   avg_confidence_correct: number | null;
@@ -152,6 +157,7 @@ export interface Session {
   errorCount: number;
   logs: LogEntry[];
   report: GradingReport | null;
+  reportError?: string | null;
 }
 
 export interface BackendStatus {

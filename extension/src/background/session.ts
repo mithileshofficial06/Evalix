@@ -72,13 +72,50 @@ export async function startSession(tabId: number): Promise<StartReply> {
 }
 
 export async function stopSession(reason = "Stopped by user"): Promise<void> {
+  let stopped = false;
   const s = await mutateSession((s) => {
     if (!isActive(s)) return;
     s.state = "stopped";
     s.finishedAt = Date.now();
     pushLog(s, "warn", reason);
+    stopped = true;
   });
-  if (s) await send(s.tabId, { type: "STOP" }).catch(() => undefined);
+  if (s && stopped) {
+    await send(s.tabId, { type: "STOP" }).catch(() => undefined);
+    await submitReport();
+  }
+}
+
+/** Sends the finished session to the grading simulator and stores the graded report. */
+export async function submitReport(): Promise<void> {
+  const { session, settings } = await getStore();
+  if (!session || session.results.length === 0) return;
+  if (!session.page.testId) {
+    await mutateSession((s) => pushLog(s, "warn", "No test id on page — skipping grading"));
+    return;
+  }
+  try {
+    const report = await api.gradingReport(settings.backendUrl, {
+      session_id: session.id,
+      test_id: session.page.testId,
+      mode: session.mode,
+      provider: session.provider,
+      started_at: session.startedAt,
+      finished_at: session.finishedAt,
+      results: session.results,
+    });
+    await mutateSession((s) => {
+      s.report = report;
+      s.reportError = null;
+      pushLog(s, "info", `Graded: ${report.correct}/${report.total_questions} correct (${(report.accuracy * 100).toFixed(1)}% of answered)`);
+    });
+  } catch (err) {
+    const message = (err as Error).message;
+    await mutateSession((s) => {
+      s.reportError = message;
+      pushLog(s, "warn", `Grading unavailable: ${message}`);
+    });
+  }
 }
 
 export async function handleContentMessage(msg: ContentMessage, tabId: number | undefined): Promise<unknown> {
@@ -170,5 +207,6 @@ export async function handleContentMessage(msg: ContentMessage, tabId: number | 
         break;
     }
   });
+  if (msg.type === "COMPLETE" || msg.type === "FAILED") await submitReport();
   return { ok: true };
 }

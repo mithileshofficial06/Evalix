@@ -14,7 +14,7 @@ interface Props {
   backendOnline: boolean;
 }
 
-export function Controls({ settings, session, active, tabId, probe, backendOnline }: Props) {
+export function Controls({ settings, active, tabId, probe, backendOnline }: Props) {
   const [error, setError] = useState<string | null>(null);
   const automationAllowed = probe?.page?.automationAllowed ?? false;
 
@@ -77,9 +77,6 @@ export function Controls({ settings, session, active, tabId, probe, backendOnlin
       </div>
       {!active && blocker && <p className="notice">{blocker}</p>}
       {error && <p className="notice err">{error}</p>}
-      {session && !active && session.state !== "idle" && (
-        <p className="notice">Last session: {session.state}</p>
-      )}
     </section>
   );
 }

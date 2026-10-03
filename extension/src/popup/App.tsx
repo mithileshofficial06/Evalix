@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { updateSettings } from "../shared/storage";
 import type { PopupMessage } from "../shared/messages";
 import { isActive } from "../shared/state";
+import { updateSettings } from "../shared/storage";
 import { Controls } from "./Controls";
+import { Dashboard } from "./Dashboard";
 import { usePageProbe } from "./usePageProbe";
 import { useStore } from "./useStore";
 
@@ -20,13 +21,11 @@ export function App() {
   }, []);
 
   if (!store) return null;
-  const { settings, backend } = store;
-  const providerConfigured = (name: string) =>
-    backend?.health?.providers.find((p) => p.name === name)?.configured ?? false;
+  const { settings, backend, session } = store;
+  const providerConfigured = (name: string) => backend?.health?.providers.find((p) => p.name === name)?.configured ?? false;
   const aiReady =
-    settings.provider === "AUTO"
-      ? providerConfigured("MISTRAL") || providerConfigured("NVIDIA")
-      : providerConfigured(settings.provider);
+    settings.provider === "AUTO" ? providerConfigured("MISTRAL") || providerConfigured("NVIDIA") : providerConfigured(settings.provider);
+  const active = isActive(session);
 
   return (
     <div className="popup">
@@ -38,11 +37,7 @@ export function App() {
       <section className="row">
         <span>Extension</span>
         <label className="switch">
-          <input
-            type="checkbox"
-            checked={settings.enabled}
-            onChange={(e) => updateSettings({ enabled: e.target.checked })}
-          />
+          <input type="checkbox" checked={settings.enabled} onChange={(e) => updateSettings({ enabled: e.target.checked })} />
           <span>{settings.enabled ? "ON" : "OFF"}</span>
         </label>
       </section>
@@ -54,50 +49,37 @@ export function App() {
             <span className={`dot ${backend?.online ? "ok" : "err"}`} />
             {backend?.online ? "Online" : "Offline"}
           </dd>
-          <dt>AI</dt>
+          <dt>AI ({settings.provider})</dt>
           <dd>
             <span className={`dot ${aiReady ? "ok" : "warn"}`} />
             {aiReady ? "Connected" : "Not configured"}
           </dd>
-        </dl>
-        {!backend?.online && (
-          <p className="notice err">Start the backend: scripts\run-backend.ps1 ({settings.backendUrl})</p>
-        )}
-      </section>
-
-      <Controls
-        settings={settings}
-        session={store.session}
-        active={isActive(store.session)}
-        tabId={tabId}
-        probe={probe}
-        backendOnline={!!backend?.online}
-      />
-
-      <section className="card">
-        <h2>Page</h2>
-        {probe?.page ? (
-          <>
-            <dl className="kv">
-              <dt>Test</dt>
-              <dd>{probe.page.testId ?? "—"}</dd>
-              <dt>Environment</dt>
-              <dd>{probe.page.environment}</dd>
-            </dl>
-            {probe.complete ? (
-              <p className="notice">Assessment complete.</p>
-            ) : probe.question ? (
-              <p className="question">
-                Q{probe.question.questionNumber ?? "?"}: {probe.question.text} ({probe.question.options.length} options)
-              </p>
+          <dt>Page</dt>
+          <dd>
+            {probe?.page ? (
+              <>
+                <span className="dot ok" />
+                {probe.page.testId ?? "assessment"} ({probe.page.environment})
+              </>
             ) : (
-              <p className="notice">Waiting for a question…</p>
+              <>
+                <span className="dot" />
+                Not detected
+              </>
             )}
-          </>
-        ) : (
-          <p className="notice">No Evalix-enabled assessment on this tab.</p>
+          </dd>
+        </dl>
+        {!backend?.online && <p className="notice err">Start the backend: scripts\run-backend.ps1</p>}
+        {!active && probe?.page && probe.question && (
+          <p className="question notice">
+            Detected Q{probe.question.questionNumber ?? "?"}: {probe.question.text}
+          </p>
         )}
       </section>
+
+      <Controls settings={settings} session={session} active={active} tabId={tabId} probe={probe} backendOnline={!!backend?.online} />
+
+      {session && <Dashboard session={session} />}
     </div>
   );
 }

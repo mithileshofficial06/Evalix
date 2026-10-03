@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from urllib.parse import urlsplit
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -9,6 +10,7 @@ from ..config import get_settings
 from ..schemas import AnswerRequest, AnswerResponse
 
 router = APIRouter()
+log = logging.getLogger("evalix.answer")
 
 
 def get_router() -> AIRouter:
@@ -29,8 +31,15 @@ async def answer(req: AnswerRequest, ai: AIRouter = Depends(get_router)) -> Answ
 
     mode = (req.provider or settings.default_provider).upper()
     try:
-        return await ai.answer(req, mode)
+        res = await ai.answer(req, mode)
     except NoProviderAvailable as e:
         raise HTTPException(503, str(e)) from e
     except AllProvidersFailed as e:
+        log.error("session %s %s: all providers failed: %s", req.session_id, req.question_id, e)
         raise HTTPException(502, f"All providers failed: {e}") from e
+    log.info(
+        "session %s %s -> %s (%.2f) via %s/%s in %.0f ms, attempts=%d%s",
+        req.session_id[:8], req.question_id, res.answer, res.confidence, res.provider, res.model,
+        res.latency_ms, res.attempts, " [fallback]" if res.fallback_used else "",
+    )
+    return res
