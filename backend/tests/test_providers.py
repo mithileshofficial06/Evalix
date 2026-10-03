@@ -81,6 +81,14 @@ async def test_provider_error_classification(response, retryable):
     assert exc.value.retryable is retryable
 
 
+async def test_zero_quota_429_is_not_retryable():
+    response = httpx.Response(429, json={"message": "Rate limit exceeded"}, headers={"x-ratelimit-limit-req-minute": "0"})
+    p = MistralProvider("mk", "mistral-small-latest", transport=httpx.MockTransport(lambda r: response))
+    with pytest.raises(ProviderError, match="not available on this API plan") as exc:
+        await p.answer(make_request())
+    assert exc.value.retryable is False
+
+
 async def test_timeout_is_retryable():
     def handler(request):
         raise httpx.ReadTimeout("slow", request=request)

@@ -90,7 +90,7 @@ Edit `backend/.env`:
 
 | Variable | Where to get it |
 |---|---|
-| `MISTRAL_API_KEY` | https://console.mistral.ai → API Keys. Default model `mistral-small-latest` |
+| `MISTRAL_API_KEY` | https://console.mistral.ai → API Keys. Default model `ministral-14b-latest` (the free plan allows 0 requests/min on `mistral-small`/`medium`; check `x-ratelimit-limit-req-minute`) |
 | `NVIDIA_API_KEY` | https://build.nvidia.com → sign in → any model page → *Get API Key* (starts with `nvapi-`). One key works for every hosted model. Default model `nvidia/nemotron-3.5-lightning-30b-a3b` with thinking off (`NVIDIA_ENABLE_THINKING=false`) |
 
 Set `AI_PROVIDER` to `AUTO` (Mistral, falling back to NVIDIA), `MISTRAL`, `NVIDIA`, or `MOCK`.

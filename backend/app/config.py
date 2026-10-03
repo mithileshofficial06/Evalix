@@ -57,7 +57,7 @@ def get_settings() -> Settings:
     return Settings(
         mistral_api_key=os.getenv("MISTRAL_API_KEY", "").strip(),
         nvidia_api_key=os.getenv("NVIDIA_API_KEY", "").strip(),
-        mistral_model=os.getenv("MISTRAL_MODEL", "mistral-small-latest").strip(),
+        mistral_model=os.getenv("MISTRAL_MODEL", "ministral-14b-latest").strip(),
         nvidia_model=os.getenv("NVIDIA_MODEL", "nvidia/nemotron-3.5-lightning-30b-a3b").strip(),
         default_provider=provider,
         enable_mock=_bool(os.getenv("EVALIX_ENABLE_MOCK"), default=False),

@@ -56,6 +56,13 @@ class OpenAICompatibleProvider:
         except httpx.HTTPError as e:
             raise ProviderError(f"{self.name} network error: {e}", retryable=True) from e
 
+        if res.status_code == 429 and res.headers.get("x-ratelimit-limit-req-minute") == "0":
+            # A zero quota means the model isn't included in the account's plan — retrying can't help.
+            raise ProviderError(
+                f"{self.name} model {self.model!r} is not available on this API plan (0 requests/min)",
+                retryable=False,
+                status=429,
+            )
         if res.status_code != 200:
             retryable = res.status_code in (408, 409, 429) or res.status_code >= 500
             # Error bodies don't contain the key, but never echo request headers.
