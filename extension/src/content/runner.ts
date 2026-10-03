@@ -5,6 +5,7 @@ import type { AskReply } from "../shared/messages";
 import type { ExtractedQuestion, LogEntry, Mode, QuestionResult, RunState } from "../shared/types";
 import type { DomAdapter, Extraction } from "./adapters/types";
 import { mapAnswer } from "./mapper";
+import { advance, NavigationError } from "./navigator";
 import { AbortedError, signatureOf, waitForNextState } from "./observer";
 
 export interface Bridge {
@@ -24,9 +25,20 @@ export interface RunnerTiming {
   dryRunTimeoutMs: number;
   /** DOM must be quiet this long before a question counts as fully rendered. */
   quietMs: number;
+  /** Navigation timings (see navigator.ts). */
+  enableTimeoutMs: number;
+  reactTimeoutMs: number;
+  actionDelayMs: number;
 }
 
-export const DEFAULT_TIMING: RunnerTiming = { questionTimeoutMs: 30_000, dryRunTimeoutMs: 30 * 60_000, quietMs: 300 };
+export const DEFAULT_TIMING: RunnerTiming = {
+  questionTimeoutMs: 30_000,
+  dryRunTimeoutMs: 30 * 60_000,
+  quietMs: 300,
+  enableTimeoutMs: 5_000,
+  reactTimeoutMs: 4_000,
+  actionDelayMs: 150,
+};
 
 export class Runner {
   private abort: AbortController | null = null;
@@ -145,6 +157,22 @@ export class Runner {
     }
     result.selected = true;
     finish(null);
+
+    this.bridge.state("navigating");
+    try {
+      await advance(this.adapter, this.doc, signatureOf(this.adapter.extract(this.doc) ?? extraction), {
+        enableTimeoutMs: this.timing.enableTimeoutMs,
+        reactTimeoutMs: this.timing.reactTimeoutMs,
+        actionDelayMs: this.timing.actionDelayMs,
+        signal,
+      });
+    } catch (err) {
+      if (err instanceof NavigationError) {
+        this.bridge.failed(`Q${q.questionNumber ?? "?"}: ${err.message}`);
+        return false;
+      }
+      throw err;
+    }
     return true;
   }
 }

@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { SemanticAdapter } from "../src/content/adapters/semantic";
-import { Runner } from "../src/content/runner";
+import { DEFAULT_TIMING, Runner } from "../src/content/runner";
 import { fakeBridge, reply, until } from "./helpers/bridge";
 import { renderQuestion, SAMPLE, setupPage } from "./helpers/site";
 
 const adapter = new SemanticAdapter();
-const timing = { questionTimeoutMs: 2000, dryRunTimeoutMs: 2000, quietMs: 20 };
+const timing = { ...DEFAULT_TIMING, questionTimeoutMs: 2000, dryRunTimeoutMs: 2000, quietMs: 20 };
 
 beforeEach(() => setupPage());
 
