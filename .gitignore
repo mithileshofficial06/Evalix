@@ -1,0 +1,28 @@
+# Secrets — API keys live only in backend/.env, never in git or the extension
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node / extension build
+node_modules/
+extension/dist/
+e2e/test-results/
+e2e/playwright-report/
+*.log
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Local run artifacts
+reports/
