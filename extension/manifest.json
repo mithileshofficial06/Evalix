@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Evalix",
+  "version": "0.1.0",
+  "description": "AI assessment execution and QA engine for opted-in local assessment pages.",
+  "permissions": ["storage"],
+  "host_permissions": ["http://localhost/*", "http://127.0.0.1/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://localhost/*", "http://127.0.0.1/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "Evalix",
+    "default_popup": "popup.html"
+  }
+}
