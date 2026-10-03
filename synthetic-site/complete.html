@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="evalix-qa" content="enabled" />
+    <meta name="evalix-environment" content="synthetic" />
+    <meta name="evalix-page" content="complete" />
+    <title>Assessment Complete</title>
+    <link rel="stylesheet" href="css/site.css" />
+  </head>
+  <body>
+    <main class="shell" data-qa-complete>
+      <header class="topbar">
+        <a href="index.html" class="brand">Synthetic QA</a>
+        <h1>Assessment complete</h1>
+      </header>
+      <section class="question">
+        <p id="summary">Calculating score…</p>
+        <dl id="score" class="score"></dl>
+        <p><a href="index.html">Back to tests</a></p>
+      </section>
+    </main>
+    <script type="module">
+      // Page-side grading: scores what the page actually recorded, independent of the extension.
+      const summary = document.getElementById("summary");
+      const score = document.getElementById("score");
+      const raw = sessionStorage.getItem("evalix-site-result");
+      if (!raw) {
+        summary.textContent = "No recorded attempt in this tab.";
+      } else {
+        const result = JSON.parse(raw);
+        const seconds = ((result.finished_at - result.started_at) / 1000).toFixed(1);
+        summary.textContent = `Recorded ${Object.keys(result.answers).length} answers for ${result.test_id} in ${seconds}s.`;
+        try {
+          const res = await fetch("http://localhost:8000/grading/score", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ test_id: result.test_id, answers: result.answers }),
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const s = await res.json();
+          const rows = [
+            ["Score", `${s.correct} / ${s.total_questions}`],
+            ["Accuracy", `${(s.accuracy * 100).toFixed(1)}%`],
+            ["Unanswered", s.unanswered],
+          ];
+          score.replaceChildren(...rows.flatMap(([k, v]) => [Object.assign(document.createElement("dt"), { textContent: k }), Object.assign(document.createElement("dd"), { textContent: v })]));
+        } catch (err) {
+          summary.textContent += ` (Grading backend unavailable: ${err.message})`;
+        }
+      }
+    </script>
+  </body>
+</html>

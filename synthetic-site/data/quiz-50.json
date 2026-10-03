@@ -1,0 +1,1106 @@
+{
+  "id": "quiz-50",
+  "title": "Synthetic QA — 50 questions",
+  "questions": [
+    {
+      "id": "q01",
+      "text": "What is 7 × 8?",
+      "options": [
+        {
+          "id": "A",
+          "text": "54"
+        },
+        {
+          "id": "B",
+          "text": "64"
+        },
+        {
+          "id": "C",
+          "text": "48"
+        },
+        {
+          "id": "D",
+          "text": "56"
+        }
+      ]
+    },
+    {
+      "id": "q02",
+      "text": "Which planet is known as the Red Planet?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Mercury"
+        },
+        {
+          "id": "B",
+          "text": "Venus"
+        },
+        {
+          "id": "C",
+          "text": "Mars"
+        },
+        {
+          "id": "D",
+          "text": "Jupiter"
+        }
+      ]
+    },
+    {
+      "id": "q03",
+      "text": "What is the chemical symbol for gold?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Ag"
+        },
+        {
+          "id": "B",
+          "text": "Au"
+        },
+        {
+          "id": "C",
+          "text": "Go"
+        },
+        {
+          "id": "D",
+          "text": "Gd"
+        }
+      ]
+    },
+    {
+      "id": "q04",
+      "text": "Which data structure follows First-In, First-Out (FIFO) order?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Queue"
+        },
+        {
+          "id": "B",
+          "text": "Stack"
+        },
+        {
+          "id": "C",
+          "text": "Binary tree"
+        },
+        {
+          "id": "D",
+          "text": "Hash set"
+        }
+      ]
+    },
+    {
+      "id": "q05",
+      "text": "What is the capital of Japan?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Osaka"
+        },
+        {
+          "id": "B",
+          "text": "Kyoto"
+        },
+        {
+          "id": "C",
+          "text": "Seoul"
+        },
+        {
+          "id": "D",
+          "text": "Tokyo"
+        }
+      ]
+    },
+    {
+      "id": "q06",
+      "text": "How many sides does a hexagon have?",
+      "options": [
+        {
+          "id": "A",
+          "text": "5"
+        },
+        {
+          "id": "B",
+          "text": "7"
+        },
+        {
+          "id": "C",
+          "text": "6"
+        },
+        {
+          "id": "D",
+          "text": "8"
+        }
+      ]
+    },
+    {
+      "id": "q07",
+      "text": "What gas do plants primarily absorb for photosynthesis?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Oxygen"
+        },
+        {
+          "id": "B",
+          "text": "Helium"
+        },
+        {
+          "id": "C",
+          "text": "Nitrogen"
+        },
+        {
+          "id": "D",
+          "text": "Carbon dioxide"
+        }
+      ]
+    },
+    {
+      "id": "q08",
+      "text": "Which HTTP status code means 'Not Found'?",
+      "options": [
+        {
+          "id": "A",
+          "text": "200"
+        },
+        {
+          "id": "B",
+          "text": "301"
+        },
+        {
+          "id": "C",
+          "text": "404"
+        },
+        {
+          "id": "D",
+          "text": "500"
+        }
+      ]
+    },
+    {
+      "id": "q09",
+      "text": "What is the square root of 144?",
+      "options": [
+        {
+          "id": "A",
+          "text": "12"
+        },
+        {
+          "id": "B",
+          "text": "16"
+        },
+        {
+          "id": "C",
+          "text": "11"
+        },
+        {
+          "id": "D",
+          "text": "14"
+        }
+      ]
+    },
+    {
+      "id": "q10",
+      "text": "Who wrote 'Romeo and Juliet'?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Jane Austen"
+        },
+        {
+          "id": "B",
+          "text": "Mark Twain"
+        },
+        {
+          "id": "C",
+          "text": "Charles Dickens"
+        },
+        {
+          "id": "D",
+          "text": "William Shakespeare"
+        }
+      ]
+    },
+    {
+      "id": "q11",
+      "text": "What is the boiling point of water at sea level in Celsius?",
+      "options": [
+        {
+          "id": "A",
+          "text": "212 °C"
+        },
+        {
+          "id": "B",
+          "text": "110 °C"
+        },
+        {
+          "id": "C",
+          "text": "90 °C"
+        },
+        {
+          "id": "D",
+          "text": "100 °C"
+        }
+      ]
+    },
+    {
+      "id": "q12",
+      "text": "Which language is primarily used to style web pages?",
+      "options": [
+        {
+          "id": "A",
+          "text": "SQL"
+        },
+        {
+          "id": "B",
+          "text": "C"
+        },
+        {
+          "id": "C",
+          "text": "CSS"
+        },
+        {
+          "id": "D",
+          "text": "Python"
+        }
+      ]
+    },
+    {
+      "id": "q13",
+      "text": "What is the largest ocean on Earth?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Arctic Ocean"
+        },
+        {
+          "id": "B",
+          "text": "Atlantic Ocean"
+        },
+        {
+          "id": "C",
+          "text": "Indian Ocean"
+        },
+        {
+          "id": "D",
+          "text": "Pacific Ocean"
+        }
+      ]
+    },
+    {
+      "id": "q14",
+      "text": "What is 15% of 200?",
+      "options": [
+        {
+          "id": "A",
+          "text": "30"
+        },
+        {
+          "id": "B",
+          "text": "35"
+        },
+        {
+          "id": "C",
+          "text": "15"
+        },
+        {
+          "id": "D",
+          "text": "20"
+        }
+      ]
+    },
+    {
+      "id": "q15",
+      "text": "Which organ pumps blood through the human body?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Lungs"
+        },
+        {
+          "id": "B",
+          "text": "Kidney"
+        },
+        {
+          "id": "C",
+          "text": "Heart"
+        },
+        {
+          "id": "D",
+          "text": "Liver"
+        }
+      ]
+    },
+    {
+      "id": "q16",
+      "text": "What is the binary representation of the decimal number 5?",
+      "options": [
+        {
+          "id": "A",
+          "text": "110"
+        },
+        {
+          "id": "B",
+          "text": "101"
+        },
+        {
+          "id": "C",
+          "text": "111"
+        },
+        {
+          "id": "D",
+          "text": "100"
+        }
+      ]
+    },
+    {
+      "id": "q17",
+      "text": "Which continent is Egypt located in?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Asia"
+        },
+        {
+          "id": "B",
+          "text": "Africa"
+        },
+        {
+          "id": "C",
+          "text": "South America"
+        },
+        {
+          "id": "D",
+          "text": "Europe"
+        }
+      ]
+    },
+    {
+      "id": "q18",
+      "text": "What is the freezing point of water in Fahrenheit?",
+      "options": [
+        {
+          "id": "A",
+          "text": "0 °F"
+        },
+        {
+          "id": "B",
+          "text": "45 °F"
+        },
+        {
+          "id": "C",
+          "text": "32 °F"
+        },
+        {
+          "id": "D",
+          "text": "100 °F"
+        }
+      ]
+    },
+    {
+      "id": "q19",
+      "text": "Which keyword declares a constant in JavaScript?",
+      "options": [
+        {
+          "id": "A",
+          "text": "var"
+        },
+        {
+          "id": "B",
+          "text": "static"
+        },
+        {
+          "id": "C",
+          "text": "let"
+        },
+        {
+          "id": "D",
+          "text": "const"
+        }
+      ]
+    },
+    {
+      "id": "q20",
+      "text": "How many minutes are in 3 hours?",
+      "options": [
+        {
+          "id": "A",
+          "text": "120"
+        },
+        {
+          "id": "B",
+          "text": "200"
+        },
+        {
+          "id": "C",
+          "text": "160"
+        },
+        {
+          "id": "D",
+          "text": "180"
+        }
+      ]
+    },
+    {
+      "id": "q21",
+      "text": "Which element has the atomic number 1?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Oxygen"
+        },
+        {
+          "id": "B",
+          "text": "Helium"
+        },
+        {
+          "id": "C",
+          "text": "Hydrogen"
+        },
+        {
+          "id": "D",
+          "text": "Carbon"
+        }
+      ]
+    },
+    {
+      "id": "q22",
+      "text": "What is the time complexity of binary search on a sorted array?",
+      "options": [
+        {
+          "id": "A",
+          "text": "O(n)"
+        },
+        {
+          "id": "B",
+          "text": "O(1)"
+        },
+        {
+          "id": "C",
+          "text": "O(n log n)"
+        },
+        {
+          "id": "D",
+          "text": "O(log n)"
+        }
+      ]
+    },
+    {
+      "id": "q23",
+      "text": "Which country hosted the 2016 Summer Olympics?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Japan"
+        },
+        {
+          "id": "B",
+          "text": "Brazil"
+        },
+        {
+          "id": "C",
+          "text": "United Kingdom"
+        },
+        {
+          "id": "D",
+          "text": "China"
+        }
+      ]
+    },
+    {
+      "id": "q24",
+      "text": "What is 9 squared?",
+      "options": [
+        {
+          "id": "A",
+          "text": "90"
+        },
+        {
+          "id": "B",
+          "text": "72"
+        },
+        {
+          "id": "C",
+          "text": "81"
+        },
+        {
+          "id": "D",
+          "text": "99"
+        }
+      ]
+    },
+    {
+      "id": "q25",
+      "text": "Which part of the cell contains genetic material in eukaryotes?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Ribosome"
+        },
+        {
+          "id": "B",
+          "text": "Nucleus"
+        },
+        {
+          "id": "C",
+          "text": "Cell membrane"
+        },
+        {
+          "id": "D",
+          "text": "Cytoplasm"
+        }
+      ]
+    },
+    {
+      "id": "q26",
+      "text": "What does 'CPU' stand for?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Central Processing Unit"
+        },
+        {
+          "id": "B",
+          "text": "Computer Personal Unit"
+        },
+        {
+          "id": "C",
+          "text": "Core Processing Utility"
+        },
+        {
+          "id": "D",
+          "text": "Central Program Utility"
+        }
+      ]
+    },
+    {
+      "id": "q27",
+      "text": "What is the longest river in South America?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Paraná"
+        },
+        {
+          "id": "B",
+          "text": "Amazon"
+        },
+        {
+          "id": "C",
+          "text": "Magdalena"
+        },
+        {
+          "id": "D",
+          "text": "Orinoco"
+        }
+      ]
+    },
+    {
+      "id": "q28",
+      "text": "What is 1000 divided by 8?",
+      "options": [
+        {
+          "id": "A",
+          "text": "128"
+        },
+        {
+          "id": "B",
+          "text": "150"
+        },
+        {
+          "id": "C",
+          "text": "125"
+        },
+        {
+          "id": "D",
+          "text": "120"
+        }
+      ]
+    },
+    {
+      "id": "q29",
+      "text": "Which vitamin is produced in the skin in response to sunlight?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Vitamin A"
+        },
+        {
+          "id": "B",
+          "text": "Vitamin K"
+        },
+        {
+          "id": "C",
+          "text": "Vitamin C"
+        },
+        {
+          "id": "D",
+          "text": "Vitamin D"
+        }
+      ]
+    },
+    {
+      "id": "q30",
+      "text": "Which SQL clause filters rows before grouping?",
+      "options": [
+        {
+          "id": "A",
+          "text": "ORDER BY"
+        },
+        {
+          "id": "B",
+          "text": "HAVING"
+        },
+        {
+          "id": "C",
+          "text": "WHERE"
+        },
+        {
+          "id": "D",
+          "text": "LIMIT"
+        }
+      ]
+    },
+    {
+      "id": "q31",
+      "text": "How many degrees are in a right angle?",
+      "options": [
+        {
+          "id": "A",
+          "text": "180"
+        },
+        {
+          "id": "B",
+          "text": "60"
+        },
+        {
+          "id": "C",
+          "text": "90"
+        },
+        {
+          "id": "D",
+          "text": "45"
+        }
+      ]
+    },
+    {
+      "id": "q32",
+      "text": "Which is the smallest prime number?",
+      "options": [
+        {
+          "id": "A",
+          "text": "3"
+        },
+        {
+          "id": "B",
+          "text": "1"
+        },
+        {
+          "id": "C",
+          "text": "2"
+        },
+        {
+          "id": "D",
+          "text": "0"
+        }
+      ]
+    },
+    {
+      "id": "q33",
+      "text": "What is the capital of Australia?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Melbourne"
+        },
+        {
+          "id": "B",
+          "text": "Perth"
+        },
+        {
+          "id": "C",
+          "text": "Sydney"
+        },
+        {
+          "id": "D",
+          "text": "Canberra"
+        }
+      ]
+    },
+    {
+      "id": "q34",
+      "text": "Which force keeps planets in orbit around the Sun?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Buoyancy"
+        },
+        {
+          "id": "B",
+          "text": "Gravity"
+        },
+        {
+          "id": "C",
+          "text": "Friction"
+        },
+        {
+          "id": "D",
+          "text": "Magnetism"
+        }
+      ]
+    },
+    {
+      "id": "q35",
+      "text": "In Git, which command creates a new commit from staged changes?",
+      "options": [
+        {
+          "id": "A",
+          "text": "git stash"
+        },
+        {
+          "id": "B",
+          "text": "git push"
+        },
+        {
+          "id": "C",
+          "text": "git fetch"
+        },
+        {
+          "id": "D",
+          "text": "git commit"
+        }
+      ]
+    },
+    {
+      "id": "q36",
+      "text": "What is the perimeter of a square with side length 6?",
+      "options": [
+        {
+          "id": "A",
+          "text": "12"
+        },
+        {
+          "id": "B",
+          "text": "36"
+        },
+        {
+          "id": "C",
+          "text": "24"
+        },
+        {
+          "id": "D",
+          "text": "18"
+        }
+      ]
+    },
+    {
+      "id": "q37",
+      "text": "Which instrument measures atmospheric pressure?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Barometer"
+        },
+        {
+          "id": "B",
+          "text": "Anemometer"
+        },
+        {
+          "id": "C",
+          "text": "Hygrometer"
+        },
+        {
+          "id": "D",
+          "text": "Thermometer"
+        }
+      ]
+    },
+    {
+      "id": "q38",
+      "text": "Who painted the Mona Lisa?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Michelangelo"
+        },
+        {
+          "id": "B",
+          "text": "Vincent van Gogh"
+        },
+        {
+          "id": "C",
+          "text": "Leonardo da Vinci"
+        },
+        {
+          "id": "D",
+          "text": "Raphael"
+        }
+      ]
+    },
+    {
+      "id": "q39",
+      "text": "What is 2 to the power of 10?",
+      "options": [
+        {
+          "id": "A",
+          "text": "1024"
+        },
+        {
+          "id": "B",
+          "text": "1000"
+        },
+        {
+          "id": "C",
+          "text": "2048"
+        },
+        {
+          "id": "D",
+          "text": "512"
+        }
+      ]
+    },
+    {
+      "id": "q40",
+      "text": "Which protocol is used to securely browse websites?",
+      "options": [
+        {
+          "id": "A",
+          "text": "SMTP"
+        },
+        {
+          "id": "B",
+          "text": "HTTPS"
+        },
+        {
+          "id": "C",
+          "text": "Telnet"
+        },
+        {
+          "id": "D",
+          "text": "FTP"
+        }
+      ]
+    },
+    {
+      "id": "q41",
+      "text": "What is the hardest natural substance?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Granite"
+        },
+        {
+          "id": "B",
+          "text": "Quartz"
+        },
+        {
+          "id": "C",
+          "text": "Iron"
+        },
+        {
+          "id": "D",
+          "text": "Diamond"
+        }
+      ]
+    },
+    {
+      "id": "q42",
+      "text": "How many continents are there on Earth?",
+      "options": [
+        {
+          "id": "A",
+          "text": "6"
+        },
+        {
+          "id": "B",
+          "text": "8"
+        },
+        {
+          "id": "C",
+          "text": "5"
+        },
+        {
+          "id": "D",
+          "text": "7"
+        }
+      ]
+    },
+    {
+      "id": "q43",
+      "text": "What is the main language of Brazil?",
+      "options": [
+        {
+          "id": "A",
+          "text": "English"
+        },
+        {
+          "id": "B",
+          "text": "Spanish"
+        },
+        {
+          "id": "C",
+          "text": "French"
+        },
+        {
+          "id": "D",
+          "text": "Portuguese"
+        }
+      ]
+    },
+    {
+      "id": "q44",
+      "text": "What is 0.5 expressed as a fraction?",
+      "options": [
+        {
+          "id": "A",
+          "text": "2/3"
+        },
+        {
+          "id": "B",
+          "text": "1/4"
+        },
+        {
+          "id": "C",
+          "text": "5/100"
+        },
+        {
+          "id": "D",
+          "text": "1/2"
+        }
+      ]
+    },
+    {
+      "id": "q45",
+      "text": "Which planet is closest to the Sun?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Mars"
+        },
+        {
+          "id": "B",
+          "text": "Earth"
+        },
+        {
+          "id": "C",
+          "text": "Mercury"
+        },
+        {
+          "id": "D",
+          "text": "Venus"
+        }
+      ]
+    },
+    {
+      "id": "q46",
+      "text": "In Python, which type is immutable?",
+      "options": [
+        {
+          "id": "A",
+          "text": "list"
+        },
+        {
+          "id": "B",
+          "text": "set"
+        },
+        {
+          "id": "C",
+          "text": "tuple"
+        },
+        {
+          "id": "D",
+          "text": "dict"
+        }
+      ]
+    },
+    {
+      "id": "q47",
+      "text": "What is the currency of the United Kingdom?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Dollar"
+        },
+        {
+          "id": "B",
+          "text": "Euro"
+        },
+        {
+          "id": "C",
+          "text": "Franc"
+        },
+        {
+          "id": "D",
+          "text": "Pound sterling"
+        }
+      ]
+    },
+    {
+      "id": "q48",
+      "text": "What is the sum of the interior angles of a triangle?",
+      "options": [
+        {
+          "id": "A",
+          "text": "270°"
+        },
+        {
+          "id": "B",
+          "text": "90°"
+        },
+        {
+          "id": "C",
+          "text": "180°"
+        },
+        {
+          "id": "D",
+          "text": "360°"
+        }
+      ]
+    },
+    {
+      "id": "q49",
+      "text": "Which blood cells help fight infection?",
+      "options": [
+        {
+          "id": "A",
+          "text": "White blood cells"
+        },
+        {
+          "id": "B",
+          "text": "Red blood cells"
+        },
+        {
+          "id": "C",
+          "text": "Platelets"
+        },
+        {
+          "id": "D",
+          "text": "Plasma cells only"
+        }
+      ]
+    },
+    {
+      "id": "q50",
+      "text": "Which design pattern ensures a class has only one instance?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Singleton"
+        },
+        {
+          "id": "B",
+          "text": "Adapter"
+        },
+        {
+          "id": "C",
+          "text": "Observer"
+        },
+        {
+          "id": "D",
+          "text": "Factory"
+        }
+      ]
+    }
+  ]
+}

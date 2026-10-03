@@ -1,0 +1,336 @@
+{
+  "id": "quiz-15",
+  "title": "Synthetic QA — 15 questions",
+  "questions": [
+    {
+      "id": "q01",
+      "text": "What is 7 × 8?",
+      "options": [
+        {
+          "id": "A",
+          "text": "54"
+        },
+        {
+          "id": "B",
+          "text": "64"
+        },
+        {
+          "id": "C",
+          "text": "48"
+        },
+        {
+          "id": "D",
+          "text": "56"
+        }
+      ]
+    },
+    {
+      "id": "q02",
+      "text": "Which planet is known as the Red Planet?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Mercury"
+        },
+        {
+          "id": "B",
+          "text": "Venus"
+        },
+        {
+          "id": "C",
+          "text": "Mars"
+        },
+        {
+          "id": "D",
+          "text": "Jupiter"
+        }
+      ]
+    },
+    {
+      "id": "q03",
+      "text": "What is the chemical symbol for gold?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Ag"
+        },
+        {
+          "id": "B",
+          "text": "Au"
+        },
+        {
+          "id": "C",
+          "text": "Go"
+        },
+        {
+          "id": "D",
+          "text": "Gd"
+        }
+      ]
+    },
+    {
+      "id": "q04",
+      "text": "Which data structure follows First-In, First-Out (FIFO) order?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Queue"
+        },
+        {
+          "id": "B",
+          "text": "Stack"
+        },
+        {
+          "id": "C",
+          "text": "Binary tree"
+        },
+        {
+          "id": "D",
+          "text": "Hash set"
+        }
+      ]
+    },
+    {
+      "id": "q05",
+      "text": "What is the capital of Japan?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Osaka"
+        },
+        {
+          "id": "B",
+          "text": "Kyoto"
+        },
+        {
+          "id": "C",
+          "text": "Seoul"
+        },
+        {
+          "id": "D",
+          "text": "Tokyo"
+        }
+      ]
+    },
+    {
+      "id": "q06",
+      "text": "How many sides does a hexagon have?",
+      "options": [
+        {
+          "id": "A",
+          "text": "5"
+        },
+        {
+          "id": "B",
+          "text": "7"
+        },
+        {
+          "id": "C",
+          "text": "6"
+        },
+        {
+          "id": "D",
+          "text": "8"
+        }
+      ]
+    },
+    {
+      "id": "q07",
+      "text": "What gas do plants primarily absorb for photosynthesis?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Oxygen"
+        },
+        {
+          "id": "B",
+          "text": "Helium"
+        },
+        {
+          "id": "C",
+          "text": "Nitrogen"
+        },
+        {
+          "id": "D",
+          "text": "Carbon dioxide"
+        }
+      ]
+    },
+    {
+      "id": "q08",
+      "text": "Which HTTP status code means 'Not Found'?",
+      "options": [
+        {
+          "id": "A",
+          "text": "200"
+        },
+        {
+          "id": "B",
+          "text": "301"
+        },
+        {
+          "id": "C",
+          "text": "404"
+        },
+        {
+          "id": "D",
+          "text": "500"
+        }
+      ]
+    },
+    {
+      "id": "q09",
+      "text": "What is the square root of 144?",
+      "options": [
+        {
+          "id": "A",
+          "text": "12"
+        },
+        {
+          "id": "B",
+          "text": "16"
+        },
+        {
+          "id": "C",
+          "text": "11"
+        },
+        {
+          "id": "D",
+          "text": "14"
+        }
+      ]
+    },
+    {
+      "id": "q10",
+      "text": "Who wrote 'Romeo and Juliet'?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Jane Austen"
+        },
+        {
+          "id": "B",
+          "text": "Mark Twain"
+        },
+        {
+          "id": "C",
+          "text": "Charles Dickens"
+        },
+        {
+          "id": "D",
+          "text": "William Shakespeare"
+        }
+      ]
+    },
+    {
+      "id": "q11",
+      "text": "What is the boiling point of water at sea level in Celsius?",
+      "options": [
+        {
+          "id": "A",
+          "text": "212 °C"
+        },
+        {
+          "id": "B",
+          "text": "110 °C"
+        },
+        {
+          "id": "C",
+          "text": "90 °C"
+        },
+        {
+          "id": "D",
+          "text": "100 °C"
+        }
+      ]
+    },
+    {
+      "id": "q12",
+      "text": "Which language is primarily used to style web pages?",
+      "options": [
+        {
+          "id": "A",
+          "text": "SQL"
+        },
+        {
+          "id": "B",
+          "text": "C"
+        },
+        {
+          "id": "C",
+          "text": "CSS"
+        },
+        {
+          "id": "D",
+          "text": "Python"
+        }
+      ]
+    },
+    {
+      "id": "q13",
+      "text": "What is the largest ocean on Earth?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Arctic Ocean"
+        },
+        {
+          "id": "B",
+          "text": "Atlantic Ocean"
+        },
+        {
+          "id": "C",
+          "text": "Indian Ocean"
+        },
+        {
+          "id": "D",
+          "text": "Pacific Ocean"
+        }
+      ]
+    },
+    {
+      "id": "q14",
+      "text": "What is 15% of 200?",
+      "options": [
+        {
+          "id": "A",
+          "text": "30"
+        },
+        {
+          "id": "B",
+          "text": "35"
+        },
+        {
+          "id": "C",
+          "text": "15"
+        },
+        {
+          "id": "D",
+          "text": "20"
+        }
+      ]
+    },
+    {
+      "id": "q15",
+      "text": "Which organ pumps blood through the human body?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Lungs"
+        },
+        {
+          "id": "B",
+          "text": "Kidney"
+        },
+        {
+          "id": "C",
+          "text": "Heart"
+        },
+        {
+          "id": "D",
+          "text": "Liver"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Synthetic QA Assessments</title>
+    <link rel="stylesheet" href="css/site.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <span class="brand">Synthetic QA</span>
+        <h1>Assessments</h1>
+      </header>
+      <section class="question">
+        <p>Reference assessments for testing Evalix. Choose a test and variant.</p>
+        <form action="quiz.html" class="launcher">
+          <label>Test
+            <select name="test">
+              <option value="quiz-15">15 questions</option>
+              <option value="quiz-50">50 questions</option>
+            </select>
+          </label>
+          <label>Layout
+            <select name="layout">
+              <option value="mixed">Mixed (rotates all layouts)</option>
+              <option value="radio">Radio buttons</option>
+              <option value="cards">ARIA radio cards</option>
+              <option value="select">Dropdown select</option>
+              <option value="listbox">ARIA listbox</option>
+            </select>
+          </label>
+          <label>Next button
+            <select name="nav">
+              <option value="mixed">Mixed (rotates variants)</option>
+              <option value="button">Disabled-until-answered button</option>
+              <option value="link">Link styled as button</option>
+              <option value="form">Form submit</option>
+            </select>
+          </label>
+          <label>Loading delay
+            <select name="delay">
+              <option value="normal">Normal (0.2–0.9s)</option>
+              <option value="none">None</option>
+              <option value="slow">Slow (1–2.5s)</option>
+            </select>
+          </label>
+          <button type="submit" class="btn-next">Start assessment</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

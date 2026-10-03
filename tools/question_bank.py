@@ -1,0 +1,63 @@
+"""Source of truth for the synthetic assessments.
+
+Each entry: (question, correct_answer, [distractors...]). The generator shuffles options
+deterministically and writes the public question files and the private answer keys.
+"""
+
+QUESTIONS = [
+    ("What is 7 × 8?", "56", ["54", "48", "64"]),
+    ("Which planet is known as the Red Planet?", "Mars", ["Venus", "Jupiter", "Mercury"]),
+    ("What is the chemical symbol for gold?", "Au", ["Ag", "Gd", "Go"]),
+    ("Which data structure follows First-In, First-Out (FIFO) order?", "Queue", ["Stack", "Binary tree", "Hash set"]),
+    ("What is the capital of Japan?", "Tokyo", ["Kyoto", "Osaka", "Seoul"]),
+    ("How many sides does a hexagon have?", "6", ["5", "7", "8"]),
+    ("What gas do plants primarily absorb for photosynthesis?", "Carbon dioxide", ["Oxygen", "Nitrogen", "Helium"]),
+    ("Which HTTP status code means 'Not Found'?", "404", ["200", "301", "500"]),
+    ("What is the square root of 144?", "12", ["11", "14", "16"]),
+    ("Who wrote 'Romeo and Juliet'?", "William Shakespeare", ["Charles Dickens", "Jane Austen", "Mark Twain"]),
+    ("What is the boiling point of water at sea level in Celsius?", "100 °C", ["90 °C", "110 °C", "212 °C"]),
+    ("Which language is primarily used to style web pages?", "CSS", ["SQL", "Python", "C"]),
+    ("What is the largest ocean on Earth?", "Pacific Ocean", ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean"]),
+    ("What is 15% of 200?", "30", ["15", "20", "35"]),
+    ("Which organ pumps blood through the human body?", "Heart", ["Liver", "Lungs", "Kidney"]),
+    ("What is the binary representation of the decimal number 5?", "101", ["110", "111", "100"]),
+    ("Which continent is Egypt located in?", "Africa", ["Asia", "Europe", "South America"]),
+    ("What is the freezing point of water in Fahrenheit?", "32 °F", ["0 °F", "100 °F", "45 °F"]),
+    ("Which keyword declares a constant in JavaScript?", "const", ["var", "let", "static"]),
+    ("How many minutes are in 3 hours?", "180", ["120", "160", "200"]),
+    ("Which element has the atomic number 1?", "Hydrogen", ["Helium", "Oxygen", "Carbon"]),
+    ("What is the time complexity of binary search on a sorted array?", "O(log n)", ["O(n)", "O(n log n)", "O(1)"]),
+    ("Which country hosted the 2016 Summer Olympics?", "Brazil", ["China", "United Kingdom", "Japan"]),
+    ("What is 9 squared?", "81", ["72", "90", "99"]),
+    ("Which part of the cell contains genetic material in eukaryotes?", "Nucleus", ["Ribosome", "Cell membrane", "Cytoplasm"]),
+    ("What does 'CPU' stand for?", "Central Processing Unit", ["Computer Personal Unit", "Central Program Utility", "Core Processing Utility"]),
+    ("What is the longest river in South America?", "Amazon", ["Paraná", "Orinoco", "Magdalena"]),
+    ("What is 1000 divided by 8?", "125", ["120", "128", "150"]),
+    ("Which vitamin is produced in the skin in response to sunlight?", "Vitamin D", ["Vitamin A", "Vitamin C", "Vitamin K"]),
+    ("Which SQL clause filters rows before grouping?", "WHERE", ["HAVING", "ORDER BY", "LIMIT"]),
+    ("How many degrees are in a right angle?", "90", ["45", "180", "60"]),
+    ("Which is the smallest prime number?", "2", ["1", "3", "0"]),
+    ("What is the capital of Australia?", "Canberra", ["Sydney", "Melbourne", "Perth"]),
+    ("Which force keeps planets in orbit around the Sun?", "Gravity", ["Magnetism", "Friction", "Buoyancy"]),
+    ("In Git, which command creates a new commit from staged changes?", "git commit", ["git push", "git fetch", "git stash"]),
+    ("What is the perimeter of a square with side length 6?", "24", ["12", "36", "18"]),
+    ("Which instrument measures atmospheric pressure?", "Barometer", ["Thermometer", "Hygrometer", "Anemometer"]),
+    ("Who painted the Mona Lisa?", "Leonardo da Vinci", ["Michelangelo", "Raphael", "Vincent van Gogh"]),
+    ("What is 2 to the power of 10?", "1024", ["512", "1000", "2048"]),
+    ("Which protocol is used to securely browse websites?", "HTTPS", ["FTP", "SMTP", "Telnet"]),
+    ("What is the hardest natural substance?", "Diamond", ["Quartz", "Iron", "Granite"]),
+    ("How many continents are there on Earth?", "7", ["5", "6", "8"]),
+    ("What is the main language of Brazil?", "Portuguese", ["Spanish", "French", "English"]),
+    ("What is 0.5 expressed as a fraction?", "1/2", ["1/4", "2/3", "5/100"]),
+    ("Which planet is closest to the Sun?", "Mercury", ["Venus", "Earth", "Mars"]),
+    ("In Python, which type is immutable?", "tuple", ["list", "dict", "set"]),
+    ("What is the currency of the United Kingdom?", "Pound sterling", ["Euro", "Dollar", "Franc"]),
+    ("What is the sum of the interior angles of a triangle?", "180°", ["90°", "270°", "360°"]),
+    ("Which blood cells help fight infection?", "White blood cells", ["Red blood cells", "Platelets", "Plasma cells only"]),
+    ("Which design pattern ensures a class has only one instance?", "Singleton", ["Factory", "Observer", "Adapter"]),
+]
+
+TESTS = {
+    "quiz-15": {"title": "Synthetic QA — 15 questions", "count": 15},
+    "quiz-50": {"title": "Synthetic QA — 50 questions", "count": 50},
+}
