@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from .config import VERSION, get_settings
-from .routes import health
+from .routes import answer, health
 
 EXTENSION_ORIGIN_PREFIX = "chrome-extension://"
 
@@ -39,6 +39,7 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(health.router)
+    app.include_router(answer.router)
     return app
 
 
