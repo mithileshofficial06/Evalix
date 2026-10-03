@@ -8,6 +8,8 @@
 //   delay   = normal | none | slow
 //   hooks   = on | off    off: no data-qa-* attributes - the agent must infer everything
 //   shuffle = off | on    on: options shown in a different order than their letters
+//   ids     = static | dynamic   dynamic: every element gets a fresh random id (and radio name) per render
+//   flaky   = off | on    on: the first press of Next on each question is silently ignored
 import { el, LAYOUT_ALL, LAYOUT_ORDER, LAYOUTS } from "./layouts.js";
 
 const params = new URLSearchParams(location.search);
@@ -17,6 +19,31 @@ const navMode = params.get("nav") || "mixed";
 const delayProfile = params.get("delay") || "normal";
 const hooks = params.get("hooks") !== "off";
 const shuffle = params.get("shuffle") === "on";
+const dynamicIds = params.get("ids") === "dynamic";
+const flaky = params.get("flaky") === "on";
+const swallowed = new Set();
+const rid = () => `x${Math.random().toString(36).slice(2, 10)}`;
+
+// Gives every element a new random id (keeping label[for] links intact) and radios a new group name.
+function scrambleIds(...roots) {
+  const renamed = new Map();
+  const radioNames = new Map();
+  for (const r of roots) {
+    for (const node of [r, ...r.querySelectorAll("*")]) {
+      const id = rid();
+      if (node.id) renamed.set(node.id, id);
+      node.id = id;
+      if (node.type === "radio") {
+        if (!radioNames.has(node.name)) radioNames.set(node.name, rid());
+        node.name = radioNames.get(node.name);
+      }
+    }
+    for (const label of r.querySelectorAll("label[for]")) {
+      const to = renamed.get(label.htmlFor);
+      if (to) label.htmlFor = to;
+    }
+  }
+}
 
 const NAV_ORDER = ["button", "link", "form"];
 const NAV_ALL = [...NAV_ORDER, "icon"];
@@ -95,8 +122,10 @@ async function renderQuestion(i) {
   const { container, control } = buildNav(navName, isLast);
   nextControl = control;
 
+  if (dynamicIds) scrambleIds(question, container, ...options);
+
   if (navName === "form") {
-    const form = el("form", { id: "question-form" }, [question, container]);
+    const form = el("form", { id: dynamicIds ? rid() : "question-form" }, [question, container]);
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       advance(q.id);
@@ -146,6 +175,10 @@ function setError(message) {
 }
 
 function advance(questionId) {
+  if (flaky && !swallowed.has(questionId)) {
+    swallowed.add(questionId); // a press that gets lost (double-render, debounce, slow handler…)
+    return;
+  }
   if (!answers[questionId]) {
     setError("Please choose an answer before continuing.");
     return;

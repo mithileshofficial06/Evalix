@@ -146,7 +146,7 @@ unreachable is skipped immediately, and after a 429 it stays skipped for `AI_COO
 (or the provider's `Retry-After`).
 
 Screenshot readings use `MISTRAL_VISION_MODEL` (default `ministral-14b-latest`) and
-`NVIDIA_VISION_MODEL` (default `nvidia/nemotron-nano-12b-v2-vl`). Screenshots need the
+`NVIDIA_VISION_MODEL` (default `nvidia/nemotron-3-nano-omni-30b-a3b-reasoning`). Screenshots need the
 `activeTab` grant Chrome gives when you open the popup and press START; if it is unavailable the
 agent continues with the DOM only.
 

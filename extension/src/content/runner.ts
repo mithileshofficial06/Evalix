@@ -178,6 +178,14 @@ export class Runner {
       // Still on the question we already handled (dry-run: the human has not advanced yet).
       const current = this.adapter.extract(this.doc);
       if (current && signatureOf(current) === previous) continue;
+      // A page that says it is still loading is not a puzzle for the AI — keep waiting.
+      if (isLoading(this.doc)) continue;
+      // Only a page that has stopped changing is worth showing to the AI (options may still be
+      // streaming in); afterwards the heuristics get another look first.
+      await waitForQuiet(this.doc.body ?? this.doc, Math.min(1000, this.timing.aiObserveAfterMs), 3000);
+      if (signal.aborted) throw new AbortedError("aborted");
+      const settled = this.adapter.extract(this.doc);
+      if (this.adapter.isComplete(this.doc) || isLoading(this.doc) || (settled && signatureOf(settled) !== previous)) continue;
       // The heuristics cannot read this page. Ask the AI — once per distinct page state.
       const fingerprint = pageFingerprint(this.doc);
       if (fingerprint === this.aiLookedAt) continue;
@@ -581,6 +589,18 @@ export class Runner {
   private trace(q: ExtractedQuestion | null, step: string, ok: boolean, detail?: string) {
     this.bridge.action({ question: q?.questionNumber ?? null, questionId: q?.questionId ?? null, step, ok, detail });
   }
+}
+
+const LOADING_TEXT = /^\s*(loading|please wait)\b/i;
+
+/** The page shows a loading state: aria-busy, a progressbar, or a status region saying "Loading…". */
+export function isLoading(doc: Document): boolean {
+  for (const el of doc.querySelectorAll("[aria-busy='true'], [role='progressbar'], [role='status'], [aria-live]")) {
+    if (!isVisible(el)) continue;
+    if (el.getAttribute("aria-busy") === "true" || el.getAttribute("role") === "progressbar") return true;
+    if (LOADING_TEXT.test(el.textContent ?? "")) return true;
+  }
+  return false;
 }
 
 function isDisabled(el: HTMLElement): boolean {

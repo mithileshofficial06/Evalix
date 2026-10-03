@@ -191,3 +191,16 @@ describe("Agent — dry run", () => {
     expect(document.querySelector("[data-evalix-next]")).toBeNull();
   });
 });
+
+describe("Agent — loading states", () => {
+  it("waits through a loading indicator without asking the AI", async () => {
+    document.getElementById("stage")!.innerHTML = `<div role="status">Loading question…</div>`;
+    setTimeout(() => renderQuestion("radio", { hooks: false }), 700);
+    const { bridge, events } = fakeBridge(() => reply("B"), () => decision({ page_state: "loading", action: { action: "wait", target: null, value: "100" } }));
+    const runner = new Runner(adapter, document, bridge, { ...timing, aiObserveAfterMs: 100 });
+    void runner.start("dry-run");
+    await until(() => events.results.length === 1);
+    runner.stop();
+    expect(events.decisions).toHaveLength(0);
+  });
+});

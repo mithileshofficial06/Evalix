@@ -64,7 +64,7 @@ def get_settings() -> Settings:
         nvidia_model=os.getenv("NVIDIA_MODEL", "nvidia/nemotron-3.5-lightning-30b-a3b").strip(),
         # Used only when the agent sends a screenshot (DOM alone was ambiguous).
         mistral_vision_model=os.getenv("MISTRAL_VISION_MODEL", "ministral-14b-latest").strip(),
-        nvidia_vision_model=os.getenv("NVIDIA_VISION_MODEL", "nvidia/nemotron-nano-12b-v2-vl").strip(),
+        nvidia_vision_model=os.getenv("NVIDIA_VISION_MODEL", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning").strip(),
         default_provider=provider,
         enable_mock=_bool(os.getenv("EVALIX_ENABLE_MOCK"), default=False),
         mock_accuracy=float(os.getenv("MOCK_ACCURACY", "0.9")),
